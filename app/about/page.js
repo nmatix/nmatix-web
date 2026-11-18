@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Nmatix Technologies</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
+
+import Link from "next/link";
+
+export default function Home() {
+  return (
+    <div className="container">
         <header>
-            <div class="logo">
-                <a href="index.html"><img src="images/nmatix-logo.png" alt="nMATIX"></a>
+            <div className="logo">
+                <a href="/">
+                    <img src="images/nmatix-logo.png" alt="nMATIX"/>
+                </a>
             </div>
             <nav>
-                <a href="index.html">Home</a>
-                <a href="contact.html">Contact</a>
+                <a href="/">Home</a>
+                <a href="/contact">Contact</a>
             </nav>
         </header>
 
-        <section class="about-content">
-            <div class="about-section">
+        <section className="about-content">
+            <div className="about-section">
                 <h2>Our Mission</h2>
                 <p>At <strong>nMATIX</strong>, we specialize in delivering <strong>innovative technology solutions</strong> that help businesses thrive in an increasingly digital world. Combining deep technical expertise with a commitment to understanding your unique challenges, we craft tailored solutions that drive <strong>efficiency, scalability</strong>, and <strong>business growth</strong>.</p>
                 
@@ -29,16 +26,16 @@
                 <p>With a focus on <strong>future-ready solutions</strong>, <strong>cutting-edge technology</strong>, and <strong>client collaboration</strong>, we empower businesses to <strong>innovate faster</strong>, <strong>operate smarter</strong>, and <strong>stay ahead</strong> in a rapidly evolving market.</p>
             </div>
             
-            <div class="founder-section">
+            <div className="founder-section">
                 <h2>Meet Our Founder</h2>
-                <div class="founder-profile">
-                    <div class="founder-info">
-                        <div class="founder-photo">
-                            <img src="images/kiran-kabalavai.jpg" alt="Kiran Kabalavai - Founder & CEO">
+                <div className="founder-profile">
+                    <div className="founder-info">
+                        <div className="founder-photo">
+                            <img src="images/kiran-kabalavai.jpg" alt="Kiran Kabalavai - Founder & CEO"/>
                         </div>
-                        <div class="founder-details">
+                        <div className="founder-details">
                             <h3>Kiran Kabalavai</h3>
-                            <p class="founder-title">Founder & Managing Partner</p>
+                            <p className="founder-title">Founder & Managing Partner</p>
                             <p>With over 30 years of experience in the IT industry, Kiran brings exceptional leadership and technical expertise to nMATIX Technologies. His distinguished career includes roles at leading organizations:</p>
                             <ul>
                                 <li>IT Leader at Amazon</li>
@@ -59,7 +56,7 @@
                 </div>
             </div>
             
-            <div class="contact-cta">
+            <div className="contact-cta">
                 <p>Ready to transform your business with innovative technology solutions? <a href="contact.html">Contact us</a> today to learn how nMATIX can support your business transformation.</p>
             </div>
         </section>
@@ -68,5 +65,5 @@
             <p>&copy; 2026 Nmatix Technologies LLP. All Rights Reserved.</p>
         </footer>
     </div>
-</body>
-</html>
+  );
+}
