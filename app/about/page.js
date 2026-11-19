@@ -4,18 +4,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="container">
-        <header>
-            <div className="logo">
-                <a href="/">
-                    <img src="images/nmatix-logo.png" alt="nMATIX"/>
-                </a>
-            </div>
-            <nav>
-                <a href="/">Home</a>
-                <a href="/contact">Contact</a>
-            </nav>
-        </header>
-
         <section className="about-content">
             <div className="about-section">
                 <h2>Our Mission</h2>
@@ -60,10 +48,6 @@ export default function Home() {
                 <p>Ready to transform your business with innovative technology solutions? <a href="contact.html">Contact us</a> today to learn how nMATIX can support your business transformation.</p>
             </div>
         </section>
-
-        <footer>
-            <p>&copy; 2026 Nmatix Technologies LLP. All Rights Reserved.</p>
-        </footer>
     </div>
   );
 }

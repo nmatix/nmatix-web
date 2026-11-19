@@ -5,18 +5,6 @@ import ContactForm from "./ContactForm";
 export default function Home() {
   return (
     <div className="container">
-        <header>
-            <div className="logo">
-                <a href="/">
-                    <img src="images/nmatix-logo.png" alt="nMATIX"/>
-                </a>
-            </div>
-            <nav>
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-            </nav>
-        </header>
-
         <section className="contact-section">
             <div className="contact-info">
                 <h2>Contact Information</h2>
@@ -33,10 +21,6 @@ export default function Home() {
                 <ContactForm />
             </div>
         </section>
-
-        <footer>
-            <p>&copy; 2026 Nmatix Technologies LLP. All Rights Reserved.</p>
-        </footer>
     </div>
   );
 }
