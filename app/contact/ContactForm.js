@@ -27,7 +27,7 @@ export default function ContactForm() {
 
     try {
       const response = await fetch(
-        "https://d8uip92nhf.execute-api.ap-south-2.amazonaws.com/prod/form/submit",
+        "https://d2uch7qqykgttv.cloudfront.net/api/form/submit",
         {
           method: "POST",
           headers: {

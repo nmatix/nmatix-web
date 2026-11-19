@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "./scripts/deploy-s3.sh dev",
+    "deploy:dev": "./scripts/deploy-s3.sh dev",
+    "deploy:prod": "./scripts/deploy-s3.sh prod"
   },
   "dependencies": {
     "next": "16.4.6",
