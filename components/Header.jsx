@@ -23,7 +23,8 @@ export default function Header() {
     ],
   };
 
-  const links = navLinks[pathname] || navLinks["/"];
+  const currentPath = pathname.replace(/\/$/, "") || "/";
+  const links = navLinks[currentPath] || navLinks["/"];
 
   return (
     <div className = "container">
@@ -42,6 +43,13 @@ export default function Header() {
             </Link>
             ))}
         </nav>
+
+        <div className="account-actions">
+            {currentPath !== "/signup" && (
+                <Link className="signup-button" href="/signup">Sign-up</Link>
+            )}
+            <Link className="login-link" href="/login">Login</Link>
+        </div>
 
         </header>
     </div>

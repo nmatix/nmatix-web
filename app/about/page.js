@@ -19,7 +19,7 @@ export default function Home() {
                 <div className="founder-profile">
                     <div className="founder-info">
                         <div className="founder-photo">
-                            <img src="images/kiran-kabalavai.jpg" alt="Kiran Kabalavai - Founder & CEO"/>
+                            <img src="/images/kiran-kabalavai.jpg" alt="Kiran Kabalavai - Founder & CEO"/>
                         </div>
                         <div className="founder-details">
                             <h3>Kiran Kabalavai</h3>
