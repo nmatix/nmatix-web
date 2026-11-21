@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nmatix-web
+
+Frontend web application for the nMATIX platform, built with Next.js 16 and React 19.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm 10+
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build static export to `out/` |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Run ESLint with auto-fix |
+| `npm run format` | Format code with Prettier |
+| `npm run format:check` | Check Prettier formatting |
+| `npm run test` | Run tests with Vitest |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run deploy:dev` | Deploy to dev environment |
+| `npm run deploy:prod` | Deploy to production |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+nmatix-web/
+├── app/                  # Next.js App Router pages and layouts
+│   ├── layout.js         # Root layout
+│   ├── page.js           # Home page
+│   └── signup/           # Signup page and components
+├── components/           # Reusable React components
+├── public/               # Static assets
+├── scripts/              # Build and deploy scripts
+├── .github/
+│   ├── workflows/        # GitHub Actions CI/CD
+│   └── ISSUE_TEMPLATE/   # Issue templates
+└── out/                  # Static export output (generated)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## CI/CD Pipeline
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Pull Requests
 
-## Deploy on Vercel
+When a PR is opened against `main`:
+1. **Lint** - ESLint and Prettier checks
+2. **Test** - Vitest unit tests
+3. **Build** - Verify static export builds
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Deployments
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Trigger | Environment | URL |
+|---------|-------------|-----|
+| Push to `main` | Dev | `https://{cloudfront-id}.cloudfront.net` |
+| Manual dispatch | Production | `https://nmatix.com` |
+
+Deployments use AWS OIDC authentication (no long-lived credentials).
+
+### Branch Protection
+
+The `main` branch requires:
+- Pull request before merging
+- Status checks: `lint`, `test`, `build`
+
+## Testing
+
+Tests use [Vitest](https://vitest.dev/) with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
+
+```bash
+# Run tests once
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+Test files should be named `*.test.jsx` and placed alongside the components they test.
+
+## Code Style
+
+- **ESLint** - Linting with `eslint-config-next`
+- **Prettier** - Code formatting
+
+```bash
+# Check formatting
+npm run format:check
+
+# Auto-fix formatting
+npm run format
+```
+
+## Environment Variables
+
+Create `.env.local` for local development:
+
+```bash
+# Example (not committed to git)
+NEXT_PUBLIC_API_URL=/api
+```
+
+## Deployment
+
+### Manual Deployment
+
+```bash
+# Deploy to dev
+npm run deploy:dev
+
+# Deploy to production
+npm run deploy:prod
+```
+
+### Infrastructure
+
+The S3 bucket and CloudFront distribution are managed by the [nmatix-infra](https://github.com/nmatix/nmatix-infra) repository using AWS CDK.
+
+## Related Repositories
+
+- [nmatix-infra](https://github.com/nmatix/nmatix-infra) - Backend infrastructure (Lambda, API, CDK)
+- [interior-quote-generator-proj](https://github.com/nmatix/interior-quote-generator-proj) - Project documentation and issue tracking
