@@ -18,23 +18,15 @@ describe("Home Page", () => {
   it("renders the hero section with main heading", () => {
     render(<Home />);
 
-    expect(
-      screen.getByRole("heading", { name: "Innovative Tech Solutions" })
-    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Innovative Tech Solutions" })).toBeTruthy();
   });
 
   it("renders the three feature sections", () => {
     render(<Home />);
 
-    expect(
-      screen.getByRole("heading", { name: "Software Development" })
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Consulting & Services" })
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "AI & Machine Learning" })
-    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Software Development" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Consulting & Services" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "AI & Machine Learning" })).toBeTruthy();
   });
 
   it("includes a contact link in the reach-out section", () => {

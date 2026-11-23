@@ -92,16 +92,9 @@ export default function Header() {
           </button>
         </div>
 
-        <div
-          className={`header-menu${mobileMenuOpen ? " is-open" : ""}`}
-          id="site-navigation"
-        >
+        <div className={`header-menu${mobileMenuOpen ? " is-open" : ""}`} id="site-navigation">
           <nav aria-label="Main navigation" className="site-nav">
-            <NavigationLink
-              currentPath={currentPath}
-              href="/about"
-              label="About"
-            />
+            <NavigationLink currentPath={currentPath} href="/about" label="About" />
 
             <details className="products-dropdown" ref={productsDropdownRef}>
               <summary className="products-toggle">Products</summary>
@@ -126,15 +119,13 @@ export default function Header() {
               </div>
             </details>
 
-            <NavigationLink
-              currentPath={currentPath}
-              href="/contact"
-              label="Contact"
-            />
+            <NavigationLink currentPath={currentPath} href="/contact" label="Contact" />
           </nav>
 
           <div className="account-actions">
-            <Link className="login-link" href="/login">Login</Link>
+            <Link className="login-link" href="/login">
+              Login
+            </Link>
           </div>
         </div>
       </header>

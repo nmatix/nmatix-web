@@ -4,7 +4,9 @@ import RegistrationForm from "./RegistrationForm";
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...props }) => (
-    <a href={href} {...props}>{children}</a>
+    <a href={href} {...props}>
+      {children}
+    </a>
   ),
 }));
 
@@ -52,9 +54,11 @@ describe("RegistrationForm", () => {
 
   it("shows a loading state and disables submission while the request is pending", async () => {
     let resolveRequest;
-    fetch.mockReturnValue(new Promise((resolve) => {
-      resolveRequest = resolve;
-    }));
+    fetch.mockReturnValue(
+      new Promise((resolve) => {
+        resolveRequest = resolve;
+      })
+    );
     render(<RegistrationForm />);
     enterValidDetails();
 

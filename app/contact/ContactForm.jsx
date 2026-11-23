@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -26,16 +25,13 @@ export default function ContactForm() {
     };
 
     try {
-      const response = await fetch(
-        "https://d2uch7qqykgttv.cloudfront.net/api/form/submit",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch("https://d2uch7qqykgttv.cloudfront.net/api/form/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
       const data = await response.json();
 
@@ -53,12 +49,9 @@ export default function ContactForm() {
 
       setSubmitted(true);
       form.reset();
-
     } catch (error) {
       console.error("Contact form error:", error);
-      setMessage(
-        "There was an error submitting your message. Please try again."
-      );
+      setMessage("There was an error submitting your message. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -70,32 +63,17 @@ export default function ContactForm() {
         <form id="contact-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-            />
+            <input type="text" id="name" name="name" required />
           </div>
 
           <div className="form-group">
             <label htmlFor="email">Email ID:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-            />
+            <input type="email" id="email" name="email" required />
           </div>
 
           <div className="form-group">
             <label htmlFor="message">Message:</label>
-            <textarea
-              id="message"
-              name="message"
-              rows="4"
-              required
-            />
+            <textarea id="message" name="message" rows="4" required />
           </div>
 
           <button type="submit" disabled={loading}>
@@ -105,11 +83,7 @@ export default function ContactForm() {
       )}
 
       {message && (
-        <div
-          id="contact-form-message"
-          role="status"
-          aria-live="polite"
-        >
+        <div id="contact-form-message" role="status" aria-live="polite">
           {message}
         </div>
       )}

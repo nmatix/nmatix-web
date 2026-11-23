@@ -33,9 +33,7 @@ export default async function ProductPage({ params }) {
   return (
     <main className="container product-page">
       <article className="product-card">
-        <p className={`product-status status-${product.status}`}>
-          {statusLabel}
-        </p>
+        <p className={`product-status status-${product.status}`}>{statusLabel}</p>
         <h1>{product.name}</h1>
         <p className="product-tagline">{product.tagline}</p>
         <p className="product-description">{product.shortDescription}</p>

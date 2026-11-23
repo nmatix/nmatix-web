@@ -1,9 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import ProductPage, {
-  generateMetadata,
-  generateStaticParams,
-} from "./page";
+import ProductPage, { generateMetadata, generateStaticParams } from "./page";
 
 vi.mock("next/navigation", () => ({
   notFound: () => {
@@ -13,7 +10,9 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...props }) => (
-    <a href={href} {...props}>{children}</a>
+    <a href={href} {...props}>
+      {children}
+    </a>
   ),
 }));
 
@@ -32,8 +31,7 @@ describe("product pages", () => {
       generateMetadata({ params: Promise.resolve({ slug: "interior-quote-generator" }) })
     ).resolves.toEqual({
       title: "Interior Quote Generator | nMATIX Technologies",
-      description:
-        "Explore a platform for creating and managing interior project estimates.",
+      description: "Explore a platform for creating and managing interior project estimates.",
     });
   });
 
@@ -46,7 +44,6 @@ describe("product pages", () => {
 
     expect(screen.getByRole("heading", { name })).toBeTruthy();
     expect(screen.getByText(status)).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Sign-up" }).getAttribute("href"))
-      .toBe("/signup");
+    expect(screen.getByRole("link", { name: "Sign-up" }).getAttribute("href")).toBe("/signup");
   });
 });

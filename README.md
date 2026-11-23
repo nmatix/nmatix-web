@@ -25,19 +25,19 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build static export to `out/` |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Run ESLint with auto-fix |
-| `npm run format` | Format code with Prettier |
-| `npm run format:check` | Check Prettier formatting |
-| `npm run test` | Run tests with Vitest |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run deploy:dev` | Deploy to dev environment |
-| `npm run deploy:prod` | Deploy to production |
+| Script                 | Description                   |
+| ---------------------- | ----------------------------- |
+| `npm run dev`          | Start development server      |
+| `npm run build`        | Build static export to `out/` |
+| `npm run start`        | Start production server       |
+| `npm run lint`         | Run ESLint                    |
+| `npm run lint:fix`     | Run ESLint with auto-fix      |
+| `npm run format`       | Format code with Prettier     |
+| `npm run format:check` | Check Prettier formatting     |
+| `npm run test`         | Run tests with Vitest         |
+| `npm run test:watch`   | Run tests in watch mode       |
+| `npm run deploy:dev`   | Deploy to dev environment     |
+| `npm run deploy:prod`  | Deploy to production          |
 
 ## Project Structure
 
@@ -61,22 +61,24 @@ nmatix-web/
 ### Pull Requests
 
 When a PR is opened against `main`:
+
 1. **Lint** - ESLint and Prettier checks
 2. **Test** - Vitest unit tests
 3. **Build** - Verify static export builds
 
 ### Deployments
 
-| Trigger | Environment | URL |
-|---------|-------------|-----|
-| Push to `main` | Dev | `https://{cloudfront-id}.cloudfront.net` |
-| Manual dispatch | Production | `https://nmatix.com` |
+| Trigger         | Environment | URL                                      |
+| --------------- | ----------- | ---------------------------------------- |
+| Push to `main`  | Dev         | `https://{cloudfront-id}.cloudfront.net` |
+| Manual dispatch | Production  | `https://nmatix.com`                     |
 
 Deployments use AWS OIDC authentication (no long-lived credentials).
 
 ### Branch Protection
 
 The `main` branch requires:
+
 - Pull request before merging
 - Status checks: `lint`, `test`, `build`
 

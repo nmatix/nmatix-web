@@ -22,9 +22,7 @@ describe("Contact Page", () => {
   it("renders contact information section", () => {
     render(<ContactPage />);
 
-    expect(
-      screen.getByRole("heading", { name: "Contact Information" })
-    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Contact Information" })).toBeTruthy();
   });
 
   it("displays office address", () => {
@@ -39,9 +37,7 @@ describe("Contact Page", () => {
   it("renders the contact form section", () => {
     render(<ContactPage />);
 
-    expect(
-      screen.getByRole("heading", { name: "Send Us a Message" })
-    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Send Us a Message" })).toBeTruthy();
     expect(screen.getByTestId("contact-form-mock")).toBeTruthy();
   });
 });

@@ -123,9 +123,7 @@ describe("ContactForm", () => {
 
     submitForm();
 
-    expect(
-      await screen.findByText(/There was an error submitting your message/)
-    ).toBeTruthy();
+    expect(await screen.findByText(/There was an error submitting your message/)).toBeTruthy();
   });
 
   it("shows error when server response has no id", async () => {
@@ -138,9 +136,7 @@ describe("ContactForm", () => {
 
     submitForm();
 
-    expect(
-      await screen.findByText(/There was an error submitting your message/)
-    ).toBeTruthy();
+    expect(await screen.findByText(/There was an error submitting your message/)).toBeTruthy();
   });
 
   it("shows error on network failure", async () => {
@@ -150,8 +146,6 @@ describe("ContactForm", () => {
 
     submitForm();
 
-    expect(
-      await screen.findByText(/There was an error submitting your message/)
-    ).toBeTruthy();
+    expect(await screen.findByText(/There was an error submitting your message/)).toBeTruthy();
   });
 });

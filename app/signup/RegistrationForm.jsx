@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-const DEVELOPMENT_ENDPOINT =
-  "https://d2ihao468hpdsu.cloudfront.net/auth/register";
+const DEVELOPMENT_ENDPOINT = "https://d2ihao468hpdsu.cloudfront.net/auth/register";
 
 function getRegistrationEndpoint() {
   if (process.env.NEXT_PUBLIC_REGISTRATION_API_URL) {
@@ -13,9 +12,7 @@ function getRegistrationEndpoint() {
 
   // The deployed CloudFront distribution routes /auth/* to the auth API.
   // Local Next.js development uses the dedicated dev CloudFront endpoint.
-  return process.env.NODE_ENV === "development"
-    ? DEVELOPMENT_ENDPOINT
-    : "/auth/register";
+  return process.env.NODE_ENV === "development" ? DEVELOPMENT_ENDPOINT : "/auth/register";
 }
 
 function normalizeIndianPhone(phone) {
@@ -55,9 +52,9 @@ function getApiFieldErrors(data) {
   if (!fields || typeof fields !== "object") return {};
 
   return Object.fromEntries(
-    Object.entries(fields).filter(([field, message]) =>
-      ["email", "name", "phone", "company"].includes(field) &&
-      typeof message === "string"
+    Object.entries(fields).filter(
+      ([field, message]) =>
+        ["email", "name", "phone", "company"].includes(field) && typeof message === "string"
     )
   );
 }
@@ -74,9 +71,7 @@ export default function RegistrationForm() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
-    const phoneDigits = normalizeIndianPhone(
-      String(formData.get("phone") || "")
-    );
+    const phoneDigits = normalizeIndianPhone(String(formData.get("phone") || ""));
     const values = {
       email: String(formData.get("email") || "").trim(),
       name: String(formData.get("name") || "").trim(),
@@ -112,14 +107,10 @@ export default function RegistrationForm() {
         // Fall through to the generic response message for non-JSON errors.
       }
 
-      if (
-        response.status === 422 ||
-        data?.error?.code === "EMAIL_ALREADY_REGISTERED"
-      ) {
+      if (response.status === 422 || data?.error?.code === "EMAIL_ALREADY_REGISTERED") {
         setResult({
           type: "duplicate",
-          message:
-            "An account with this email already exists. Please log in to continue.",
+          message: "An account with this email already exists. Please log in to continue.",
         });
         return;
       }
@@ -138,8 +129,7 @@ export default function RegistrationForm() {
         setResult({
           type: "error",
           message:
-            data?.error?.message ||
-            "We couldn't submit your registration. Please try again.",
+            data?.error?.message || "We couldn't submit your registration. Please try again.",
         });
         return;
       }
@@ -152,8 +142,7 @@ export default function RegistrationForm() {
     } catch {
       setResult({
         type: "error",
-        message:
-          "We couldn't connect to the registration service. Please try again.",
+        message: "We couldn't connect to the registration service. Please try again.",
       });
     } finally {
       submissionInProgress.current = false;
@@ -165,9 +154,7 @@ export default function RegistrationForm() {
     const { name } = event.target;
     setResult(null);
     setErrors((currentErrors) =>
-      currentErrors[name]
-        ? { ...currentErrors, [name]: undefined }
-        : currentErrors
+      currentErrors[name] ? { ...currentErrors, [name]: undefined } : currentErrors
     );
   }
 
@@ -195,7 +182,9 @@ export default function RegistrationForm() {
             type="email"
           />
           {errors.email && (
-            <p className="field-error" id="registration-email-error">{errors.email}</p>
+            <p className="field-error" id="registration-email-error">
+              {errors.email}
+            </p>
           )}
         </div>
 
@@ -212,12 +201,16 @@ export default function RegistrationForm() {
             type="text"
           />
           {errors.name && (
-            <p className="field-error" id="registration-name-error">{errors.name}</p>
+            <p className="field-error" id="registration-name-error">
+              {errors.name}
+            </p>
           )}
         </div>
 
         <div className="registration-field">
-          <label htmlFor="registration-company">Company <span>(optional)</span></label>
+          <label htmlFor="registration-company">
+            Company <span>(optional)</span>
+          </label>
           <input
             autoComplete="organization"
             aria-describedby={errors.company ? "registration-company-error" : undefined}
@@ -228,7 +221,9 @@ export default function RegistrationForm() {
             type="text"
           />
           {errors.company && (
-            <p className="field-error" id="registration-company-error">{errors.company}</p>
+            <p className="field-error" id="registration-company-error">
+              {errors.company}
+            </p>
           )}
         </div>
 
@@ -243,7 +238,9 @@ export default function RegistrationForm() {
             />
             <input
               autoComplete="tel-national"
-              aria-describedby={errors.phone ? "registration-phone-error" : "registration-phone-hint"}
+              aria-describedby={
+                errors.phone ? "registration-phone-error" : "registration-phone-hint"
+              }
               aria-invalid={Boolean(errors.phone)}
               className="phone-number-input"
               id="registration-phone"
@@ -255,7 +252,9 @@ export default function RegistrationForm() {
             />
           </div>
           {errors.phone ? (
-            <p className="field-error" id="registration-phone-error">{errors.phone}</p>
+            <p className="field-error" id="registration-phone-error">
+              {errors.phone}
+            </p>
           ) : (
             <p className="field-hint" id="registration-phone-hint">
               Enter your 10-digit Indian mobile number.
@@ -266,10 +265,14 @@ export default function RegistrationForm() {
         {result?.type === "duplicate" ? (
           <div className="registration-result duplicate" role="alert">
             <p>{result.message}</p>
-            <Link className="registration-login-button" href="/login">Login</Link>
+            <Link className="registration-login-button" href="/login">
+              Login
+            </Link>
           </div>
         ) : result?.type === "error" ? (
-          <p className="registration-result error" role="alert">{result.message}</p>
+          <p className="registration-result error" role="alert">
+            {result.message}
+          </p>
         ) : null}
 
         <button className="registration-submit" disabled={isSubmitting} type="submit">

@@ -25,9 +25,7 @@ describe("About Page", () => {
   it("renders the founder section", () => {
     render(<About />);
 
-    expect(
-      screen.getByRole("heading", { name: "Meet Our Founder" })
-    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Meet Our Founder" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Kiran Kabalavai" })).toBeTruthy();
     expect(screen.getByText("Founder & Managing Partner")).toBeTruthy();
   });
@@ -35,22 +33,16 @@ describe("About Page", () => {
   it("renders the founder photo with alt text", () => {
     render(<About />);
 
-    const founderImage = screen.getByAltText(
-      "Kiran Kabalavai - Founder & CEO"
-    );
+    const founderImage = screen.getByAltText("Kiran Kabalavai - Founder & CEO");
     expect(founderImage).toBeTruthy();
-    expect(founderImage.getAttribute("src")).toBe(
-      "/images/kiran-kabalavai.jpg"
-    );
+    expect(founderImage.getAttribute("src")).toBe("/images/kiran-kabalavai.jpg");
   });
 
   it("lists founder career highlights", () => {
     render(<About />);
 
     expect(screen.getByText("IT Leader at Amazon")).toBeTruthy();
-    expect(
-      screen.getByText("Architect at Federal Reserve Bank of Minneapolis")
-    ).toBeTruthy();
+    expect(screen.getByText("Architect at Federal Reserve Bank of Minneapolis")).toBeTruthy();
     expect(screen.getByText("Architect at Ameriprise")).toBeTruthy();
   });
 
@@ -66,8 +58,6 @@ describe("About Page", () => {
   it("includes a contact call-to-action", () => {
     render(<About />);
 
-    expect(
-      screen.getByText(/Ready to transform your business/)
-    ).toBeTruthy();
+    expect(screen.getByText(/Ready to transform your business/)).toBeTruthy();
   });
 });
