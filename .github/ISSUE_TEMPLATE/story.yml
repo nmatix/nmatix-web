@@ -1,0 +1,64 @@
+name: Story
+description: A user story or feature request
+labels: ["type:story"]
+body:
+  - type: textarea
+    id: story
+    attributes:
+      label: User Story
+      description: Describe the feature from a user's perspective
+      placeholder: "As a [type of user], I want [goal] so that [benefit]"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - must
+        - should
+        - could
+        - wont
+    validations:
+      required: true
+
+  - type: dropdown
+    id: size
+    attributes:
+      label: Size Estimate
+      description: Approximate effort
+      options:
+        - "S (1 day)"
+        - "M (2-3 days)"
+        - "L (4-5 days)"
+        - "XL (needs splitting)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know this is done?
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Technical Tasks
+      description: Implementation tasks (optional)
+      placeholder: |
+        - [ ] Task 1
+        - [ ] Task 2
+
+  - type: input
+    id: depends
+    attributes:
+      label: Dependencies
+      description: Issues this depends on
+      placeholder: "#123, #456"

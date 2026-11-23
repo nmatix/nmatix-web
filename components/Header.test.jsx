@@ -1,6 +1,19 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { usePathname } from "next/navigation";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import Header from "./Header";
 
 vi.mock("next/navigation", () => ({
@@ -9,15 +22,27 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("next/link", () => ({
   default: ({ href, children, ...props }) => (
-    <a href={href} {...props}>{children}</a>
+    <a href={href} {...props}>
+      {children}
+    </a>
   ),
 }));
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
 
-describe("Header products navigation", () => {
+describe("Header", () => {
   beforeEach(() => {
     vi.mocked(usePathname).mockReturnValue("/");
+  });
+
+  it("links the logo to the home page", () => {
+    render(<Header />);
+
+    const logo = screen.getByAltText("nMATIX");
+    expect(logo.closest("a").getAttribute("href")).toBe("/");
   });
 
   it("keeps About, Products, and Contact in order with the current page disabled", () => {
@@ -26,7 +51,8 @@ describe("Header products navigation", () => {
     const nav = screen.getByRole("navigation", { name: "Main navigation" });
 
     expect(nav.children[0].textContent.trim()).toBe("About");
-    expect(nav.children[1].querySelector("summary").textContent.trim()).toBe("Products");
+    expect(nav.children[1].querySelector("summary").textContent.trim())
+      .toBe("Products");
     expect(nav.children[2].textContent.trim()).toBe("Contact");
     expect(nav.children[0].tagName).toBe("SPAN");
     expect(nav.children[0].getAttribute("aria-current")).toBe("page");
@@ -42,13 +68,16 @@ describe("Header products navigation", () => {
     fireEvent.click(screen.getByText("Products", { exact: true }));
 
     expect(
-      screen.getByRole("link", { name: "Interior Quote Generator" }).getAttribute("href")
+      screen.getByRole("link", { name: "Interior Quote Generator" })
+        .getAttribute("href")
     ).toBe("/products/interior-quote-generator/");
-    expect(screen.getByRole("link", { name: /Tender Flow/ }).getAttribute("aria-current"))
-      .toBe("page");
+    expect(
+      screen.getByRole("link", { name: /Tender Flow/ })
+        .getAttribute("aria-current")
+    ).toBe("page");
   });
 
-  it("closes with Escape and returns focus to the Products button", () => {
+  it("closes with Escape and returns focus to the Products disclosure", () => {
     render(<Header />);
     const productsToggle = screen.getByText("Products", { exact: true });
     const productsDropdown = productsToggle.closest("details");
@@ -80,7 +109,9 @@ describe("Header products navigation", () => {
     fireEvent.click(productsToggle);
     expect(productsDropdown.open).toBe(true);
 
-    vi.mocked(usePathname).mockReturnValue("/products/interior-quote-generator/");
+    vi.mocked(usePathname).mockReturnValue(
+      "/products/interior-quote-generator/"
+    );
     rerender(<Header />);
 
     await waitFor(() => {
@@ -88,15 +119,16 @@ describe("Header products navigation", () => {
     });
   });
 
-  it("expands the mobile navigation and includes the Products disclosure", () => {
+  it("expands the mobile navigation with the Products disclosure", () => {
     render(<Header />);
     const menuButton = screen.getByRole("button", { name: "Open navigation" });
 
     fireEvent.click(menuButton);
 
     expect(menuButton.getAttribute("aria-expanded")).toBe("true");
-    expect(document.getElementById("site-navigation").classList.contains("is-open"))
-      .toBe(true);
+    expect(
+      document.getElementById("site-navigation").classList.contains("is-open")
+    ).toBe(true);
     expect(screen.getByText("Products", { exact: true })).toBeTruthy();
   });
 });
