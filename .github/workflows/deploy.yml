@@ -95,6 +95,9 @@ jobs:
             --cache-control "public, max-age=0, must-revalidate" \
             --delete
 
+      - name: Upload trailing-slash route pages
+        run: bash ./scripts/upload-directory-indexes.sh "${{ steps.cfn.outputs.bucket }}" "${{ env.AWS_REGION }}"
+
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
@@ -185,6 +188,9 @@ jobs:
             --exclude "images/*" \
             --cache-control "public, max-age=0, must-revalidate" \
             --delete
+
+      - name: Upload trailing-slash route pages
+        run: bash ./scripts/upload-directory-indexes.sh "${{ steps.cfn.outputs.bucket }}" "${{ env.AWS_REGION }}"
 
       - name: Invalidate CloudFront cache
         run: |

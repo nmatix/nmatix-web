@@ -74,6 +74,8 @@ When a PR is opened against `main`:
 | Manual dispatch | Production  | `https://nmatix.com`                     |
 
 Deployments use AWS OIDC authentication (no long-lived credentials).
+The deployment also publishes nested route pages at their trailing-slash paths
+so direct requests such as `/about/` work with the private S3 origin.
 
 ### Branch Protection
 
