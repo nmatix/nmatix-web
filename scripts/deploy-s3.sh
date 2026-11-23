@@ -276,6 +276,14 @@ while IFS= read -r html_file; do
     fi
 done < <(find "$OUT_DIR" -type f -name "*.html")
 
+# Publish directory index files at their exact trailing-slash request paths.
+log_info "Uploading trailing-slash route pages..."
+if [[ "$DRY_RUN" = true ]]; then
+    bash "$SCRIPT_DIR/upload-directory-indexes.sh" "$S3_BUCKET" "$AWS_REGION" --dry-run
+else
+    bash "$SCRIPT_DIR/upload-directory-indexes.sh" "$S3_BUCKET" "$AWS_REGION"
+fi
+
 # 6. CloudFront Cache Invalidation
 if [[ "$DRY_RUN" = false && -n "$DISTRIBUTION_ID" ]]; then
     log_info "Invalidating CloudFront cache for distribution: $DISTRIBUTION_ID..."
