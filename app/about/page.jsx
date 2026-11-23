@@ -9,7 +9,7 @@ export default function Home() {
                 <h2>Our Mission</h2>
                 <p>At <strong>nMATIX</strong>, we specialize in delivering <strong>innovative technology solutions</strong> that help businesses thrive in an increasingly digital world. Combining deep technical expertise with a commitment to understanding your unique challenges, we craft tailored solutions that drive <strong>efficiency, scalability</strong>, and <strong>business growth</strong>.</p>
                 
-                <p>Our services span <strong>custom software development</strong>, <strong>AI and machine learning</strong>, <strong>cloud infrastructure design</strong>, <strong>security and QA testing</strong>, and <strong>system integrations</strong>. Whether you're building from the ground up or enhancing your existing technology landscape, we work as your trusted partner to ensure <strong>seamless digital transformation</strong>.</p>
+                <p>Our services span <strong>custom software development</strong>, <strong>AI and machine learning</strong>, <strong>cloud infrastructure design</strong>, <strong>security and QA testing</strong>, and <strong>system integrations</strong>. Whether you are building from the ground up or enhancing your existing technology landscape, we work as your trusted partner to ensure <strong>seamless digital transformation</strong>.</p>
                 
                 <p>With a focus on <strong>future-ready solutions</strong>, <strong>cutting-edge technology</strong>, and <strong>client collaboration</strong>, we empower businesses to <strong>innovate faster</strong>, <strong>operate smarter</strong>, and <strong>stay ahead</strong> in a rapidly evolving market.</p>
             </div>
@@ -38,7 +38,7 @@ export default function Home() {
                                 <li><strong>Telecommunications:</strong> CenturyLink</li>
                                 <li><strong>Retail:</strong> Digital River</li>
                             </ul>
-                            <p>Kiran's vast experience and commitment to excellence ensure that nMATIX delivers exceptional software solutions tailored to our clients' unique needs.</p>
+                            <p>Kiran&apos;s vast experience and commitment to excellence ensure that nMATIX delivers exceptional software solutions tailored to our clients&apos; unique needs.</p>
                         </div>
                     </div>
                 </div>
