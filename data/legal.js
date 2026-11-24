@@ -6,5 +6,7 @@ export const TERMS_VERSION = "1.0";
 export const PRIVACY_VERSION = "1.0";
 export const LEGAL_EFFECTIVE_DATE = "24 November 2026";
 
-export const TERMS_PATH = "/terms";
-export const PRIVACY_PATH = "/privacy";
+// Trailing slashes matter: the static site is served from S3 behind CloudFront, where
+// "/terms" is not an object (403) but "/terms/" maps to terms/index.html.
+export const TERMS_PATH = "/terms/";
+export const PRIVACY_PATH = "/privacy/";

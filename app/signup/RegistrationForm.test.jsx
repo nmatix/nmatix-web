@@ -85,8 +85,8 @@ describe("RegistrationForm", () => {
 
     const terms = screen.getByRole("link", { name: "Terms of Service" });
     const privacy = screen.getByRole("link", { name: "Privacy Notice" });
-    expect(terms.getAttribute("href")).toBe("/terms");
-    expect(privacy.getAttribute("href")).toBe("/privacy");
+    expect(terms.getAttribute("href")).toBe("/terms/");
+    expect(privacy.getAttribute("href")).toBe("/privacy/");
     expect(terms.getAttribute("target")).toBe("_blank");
     expect(privacy.getAttribute("target")).toBe("_blank");
   });

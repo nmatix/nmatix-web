@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LEGAL_EFFECTIVE_DATE, PRIVACY_VERSION } from "../../data/legal";
+import { LEGAL_EFFECTIVE_DATE, PRIVACY_VERSION, TERMS_PATH } from "../../data/legal";
 
 export const metadata = {
   title: "Privacy Notice | nMATIX Technologies",
@@ -19,9 +19,9 @@ export default function PrivacyPage() {
         <p>
           This notice explains how Nmatix Technologies LLP (nMATIX, we, us or our) handles personal
           data when you register for an account on our website. It is intended to be read with our{" "}
-          <Link href="/terms">Terms of Service</Link>. We handle personal data in accordance with
-          applicable data protection law, including India&apos;s Digital Personal Data Protection
-          Act, 2023, to the extent applicable.
+          <Link href={TERMS_PATH}>Terms of Service</Link>. We handle personal data in accordance
+          with applicable data protection law, including India&apos;s Digital Personal Data
+          Protection Act, 2023, to the extent applicable.
         </p>
 
         <h2>1. Data we collect</h2>

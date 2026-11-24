@@ -33,10 +33,10 @@ describe("Footer", () => {
     render(<Footer />);
 
     expect(screen.getByRole("link", { name: "Terms of Service" }).getAttribute("href")).toBe(
-      "/terms"
+      "/terms/"
     );
     expect(screen.getByRole("link", { name: "Privacy Notice" }).getAttribute("href")).toBe(
-      "/privacy"
+      "/privacy/"
     );
   });
 });

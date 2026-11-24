@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PRIVACY_PATH, TERMS_PATH } from "../data/legal";
 
 export default function Footer() {
   return (
@@ -6,8 +7,8 @@ export default function Footer() {
       <footer>
         <p>&copy; 2026 Nmatix Technologies LLP. All Rights Reserved.</p>
         <nav aria-label="Legal">
-          <Link href="/terms">Terms of Service</Link>
-          <Link href="/privacy">Privacy Notice</Link>
+          <Link href={TERMS_PATH}>Terms of Service</Link>
+          <Link href={PRIVACY_PATH}>Privacy Notice</Link>
         </nav>
       </footer>
     </div>
