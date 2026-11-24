@@ -139,6 +139,7 @@ describe("RegistrationForm", () => {
           termsAccepted: true,
           termsVersion: TERMS_VERSION,
           privacyVersion: PRIVACY_VERSION,
+          turnstileToken: "test-token-1",
         }),
       })
     );
