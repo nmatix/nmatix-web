@@ -682,6 +682,63 @@ footer {
   color: #ff9a9a;
 }
 
+.verify-step p {
+  line-height: 1.5;
+}
+
+.verify-title,
+.signup-done h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.signup-done h2:focus {
+  outline: none;
+}
+
+.registration-field .code-input {
+  max-width: 220px;
+  font-size: 24px;
+  letter-spacing: 8px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.verify-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 18px;
+}
+
+.link-button {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #ff8a05;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
+
+.link-button:disabled {
+  color: #8a8a8a;
+  cursor: default;
+  text-decoration: none;
+}
+
+.link-button:focus-visible {
+  outline: 2px solid #ff8a05;
+  outline-offset: 2px;
+}
+
+.registration-result.info {
+  margin: 0;
+  color: #d7e9ff;
+}
+
 .registration-login-prompt {
   margin: 22px 0 0;
 }

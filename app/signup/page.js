@@ -1,5 +1,5 @@
 import Link from "next/link";
-import RegistrationForm from "./RegistrationForm";
+import SignupFlow from "./SignupFlow";
 
 export const metadata = {
   title: "Sign-up | nMATIX Technologies",
@@ -11,7 +11,7 @@ export default function SignupPage() {
     <main className="container registration-page">
       <section className="registration-card" aria-labelledby="registration-title">
         <h1 id="registration-title">Create your account</h1>
-        <RegistrationForm />
+        <SignupFlow />
         <p className="registration-login-prompt">
           Already registered? <Link href="/login">Login</Link>
         </p>
