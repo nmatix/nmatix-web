@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { PRIVACY_PATH, PRIVACY_VERSION, TERMS_PATH, TERMS_VERSION } from "../../data/legal";
 import { getAuthEndpoint } from "./authApi";
+import TurnstileWidget from "./TurnstileWidget";
 
 const DEFAULT_PRODUCT = "interior-quote-generator";
 const API_FIELDS = ["email", "name", "phone", "company", "terms"];
+const BOT_CHECK_WAIT = "Please wait a moment for the security check to finish.";
 
 function normalizeIndianPhone(phone) {
   let digits = phone.replace(/\D/g, "");
@@ -61,7 +63,9 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT, onRegister
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
+  const [botCheck, setBotCheck] = useState({ status: "pending" });
   const submissionInProgress = useRef(false);
+  const turnstile = useRef(null);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -81,6 +85,11 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT, onRegister
     };
 
     const validationErrors = validateRegistration(values);
+    // Wait for the bot check while it is still running. If it could not load at all
+    // (e.g. blocked), submit anyway and let the server decide.
+    if (botCheck.status === "pending") {
+      validationErrors.bot = BOT_CHECK_WAIT;
+    }
     setErrors(validationErrors);
     setResult(null);
     if (Object.keys(validationErrors).length > 0) return;
@@ -101,6 +110,7 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT, onRegister
           termsAccepted: true,
           termsVersion: TERMS_VERSION,
           privacyVersion: PRIVACY_VERSION,
+          ...(botCheck.status === "ready" ? { turnstileToken: botCheck.token } : {}),
         }),
       });
 
@@ -126,6 +136,11 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT, onRegister
           type: "duplicate",
           message: `${which} already registered. Log in, or change the highlighted details and submit again.`,
         });
+        return;
+      }
+
+      if (data?.error?.code === "BOT_CHECK_FAILED") {
+        setErrors({ bot: "The security check didn't pass. Please complete it and try again." });
         return;
       }
 
@@ -158,6 +173,19 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT, onRegister
     } finally {
       submissionInProgress.current = false;
       setIsSubmitting(false);
+      // Turnstile tokens are single use: get a fresh one for any further submission
+      turnstile.current?.reset();
+    }
+  }
+
+  function handleBotCheck(state) {
+    setBotCheck(state);
+    // Clear only the "please wait" hint once the check finishes. A failed-check message
+    // stays until the next submission, even though the widget usually re-passes at once.
+    if (state.status !== "pending") {
+      setErrors((current) =>
+        current.bot === BOT_CHECK_WAIT ? { ...current, bot: undefined } : current
+      );
     }
   }
 
@@ -290,6 +318,15 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT, onRegister
           {errors.terms && (
             <p className="field-error" id="registration-terms-error">
               {errors.terms}
+            </p>
+          )}
+        </div>
+
+        <div className="registration-field registration-bot-check">
+          <TurnstileWidget action="register" onChange={handleBotCheck} ref={turnstile} />
+          {errors.bot && (
+            <p className="field-error" id="registration-bot-error" role="alert">
+              {errors.bot}
             </p>
           )}
         </div>

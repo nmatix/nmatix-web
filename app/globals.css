@@ -753,6 +753,10 @@ footer nav a:focus-visible {
   color: #d7e9ff;
 }
 
+.registration-bot-check {
+  min-height: 65px; /* Turnstile widget height, avoids layout shift */
+}
+
 .registration-login-prompt {
   margin: 22px 0 0;
 }
