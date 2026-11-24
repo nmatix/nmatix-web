@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LEGAL_EFFECTIVE_DATE, TERMS_VERSION } from "../../data/legal";
+import { LEGAL_EFFECTIVE_DATE, PRIVACY_PATH, TERMS_VERSION } from "../../data/legal";
 
 export const metadata = {
   title: "Terms of Service | nMATIX Technologies",
@@ -43,7 +43,7 @@ export default function TermsPage() {
         <p>
           You retain rights you hold in information and materials you submit. You allow us to host,
           process, and display that material only as needed to operate, secure, and support the
-          services and as described in our <Link href="/privacy">Privacy Notice</Link>. You must
+          services and as described in our <Link href={PRIVACY_PATH}>Privacy Notice</Link>. You must
           have the rights and permissions needed to submit it.
         </p>
 
