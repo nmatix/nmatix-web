@@ -694,6 +694,12 @@ footer {
   margin-bottom: 0;
 }
 
+.legal-placeholder .legal-version {
+  margin-top: 0;
+  color: #b8b8b8;
+  font-size: 14px;
+}
+
 .product-page {
   display: flex;
   justify-content: center;
