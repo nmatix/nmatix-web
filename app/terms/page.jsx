@@ -35,8 +35,8 @@ export default function TermsPage() {
         <h2>2. Acceptable use</h2>
         <p>
           Use the services only for lawful purposes and in accordance with these Terms. Do not
-          interfere with the services, try to gain unauthorised access, introduce malicious code,
-          or use the services to violate another person&apos;s rights or applicable law.
+          interfere with the services, try to gain unauthorised access, introduce malicious code, or
+          use the services to violate another person&apos;s rights or applicable law.
         </p>
 
         <h2>3. Your content</h2>
@@ -51,8 +51,8 @@ export default function TermsPage() {
         <p>
           We or our licensors own the website, software, branding, and other materials we provide,
           excluding your content. We grant you a limited, personal, non-exclusive, non-transferable
-          right to use the services for their intended purpose while you comply with these Terms.
-          We may change, suspend, or discontinue a feature where reasonably needed to operate or
+          right to use the services for their intended purpose while you comply with these Terms. We
+          may change, suspend, or discontinue a feature where reasonably needed to operate or
           improve the services, meet legal requirements, or address security concerns.
         </p>
 
@@ -74,12 +74,11 @@ export default function TermsPage() {
 
         <h2>7. Disclaimers and liability</h2>
         <p>
-          We provide the services with reasonable care and skill. Except for commitments that
-          cannot be excluded under applicable law, the services are provided without guarantees
-          that they will always be uninterrupted or error-free. Nothing in these Terms excludes or
-          limits liability that cannot lawfully be excluded or limited. To the extent permitted by
-          law, nMATIX is not liable for indirect or consequential loss arising from use of the
-          services.
+          We provide the services with reasonable care and skill. Except for commitments that cannot
+          be excluded under applicable law, the services are provided without guarantees that they
+          will always be uninterrupted or error-free. Nothing in these Terms excludes or limits
+          liability that cannot lawfully be excluded or limited. To the extent permitted by law,
+          nMATIX is not liable for indirect or consequential loss arising from use of the services.
         </p>
 
         <h2>8. Changes to these Terms</h2>

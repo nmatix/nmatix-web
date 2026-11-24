@@ -30,7 +30,10 @@ export default function PrivacyPage() {
           <li>Your name and email address, to identify and contact you.</li>
           <li>Your phone number, to contact you about your account and service.</li>
           <li>Your business name, if you choose to provide it.</li>
-          <li>Your acceptance of the Terms of Service and this Privacy Notice, including the versions accepted and the time of acceptance.</li>
+          <li>
+            Your acceptance of the Terms of Service and this Privacy Notice, including the versions
+            accepted and the time of acceptance.
+          </li>
         </ul>
 
         <h2>2. Why we use it</h2>
@@ -61,17 +64,17 @@ export default function PrivacyPage() {
         <p>
           If you do not complete email verification, we delete your unverified registration data
           after 24 hours. For an active account, we keep registration data while the account is
-          active and for as long afterwards as needed for the purposes above, legal obligations,
-          or the establishment or defence of legal claims. When it is no longer needed, we delete
-          it or remove identifying details, subject to any retention required by law.
+          active and for as long afterwards as needed for the purposes above, legal obligations, or
+          the establishment or defence of legal claims. When it is no longer needed, we delete it or
+          remove identifying details, subject to any retention required by law.
         </p>
 
         <h2>5. Your choices and rights</h2>
         <p>
           Subject to applicable law, you may ask us for information about your personal data,
           request correction or erasure, withdraw consent where processing relies on consent, and
-          raise a grievance. You may also nominate another person to exercise your rights if you
-          die or become incapable. We may need to verify your identity before acting and may retain
+          raise a grievance. You may also nominate another person to exercise your rights if you die
+          or become incapable. We may need to verify your identity before acting and may retain
           limited information where the law permits or requires it.
         </p>
 
@@ -85,8 +88,8 @@ export default function PrivacyPage() {
 
         <h2>7. Children</h2>
         <p>
-          Our registration is intended for people legally able to enter into a binding agreement.
-          We do not knowingly seek personal data from children through this registration flow.
+          Our registration is intended for people legally able to enter into a binding agreement. We
+          do not knowingly seek personal data from children through this registration flow.
         </p>
 
         <h2>8. Updates and contact for questions or grievances</h2>
