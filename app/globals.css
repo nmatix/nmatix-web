@@ -249,6 +249,20 @@ footer {
   padding: 10px;
   font-size: 12px;
 }
+footer nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-bottom: 8px;
+}
+footer nav a {
+  color: #ff8a05;
+  text-decoration: none;
+}
+footer nav a:hover,
+footer nav a:focus-visible {
+  text-decoration: underline;
+}
 
 /* Additional styles for the About page */
 .about-content {
@@ -751,10 +765,30 @@ footer {
   margin-bottom: 0;
 }
 
-.legal-placeholder .legal-version {
+.legal-document .legal-version {
   margin-top: 0;
   color: #b8b8b8;
   font-size: 14px;
+}
+.legal-document {
+  width: 100%;
+  max-width: 900px;
+  line-height: 1.7;
+}
+.legal-document h2 {
+  margin-top: 28px;
+  margin-bottom: 10px;
+  font-size: 21px;
+}
+.legal-document p,
+.legal-document li {
+  margin-bottom: 14px;
+}
+.legal-document ul {
+  padding-left: 24px;
+}
+.legal-document a {
+  color: #ff8a05;
 }
 
 .product-page {
