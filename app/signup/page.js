@@ -3,7 +3,7 @@ import RegistrationForm from "./RegistrationForm";
 
 export const metadata = {
   title: "Sign-up | nMATIX Technologies",
-  description: "Request access to nMATIX by registering your details.",
+  description: "Create your nMATIX account to start using Interior Quote Generator.",
 };
 
 export default function SignupPage() {

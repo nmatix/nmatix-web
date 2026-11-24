@@ -616,6 +616,30 @@ footer {
   margin: 6px 0 0;
 }
 
+.checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.registration-field .checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  padding: 0;
+  flex: 0 0 auto;
+  accent-color: #ff8a05;
+}
+
+.registration-field .checkbox-row label {
+  margin-bottom: 0;
+  font-weight: normal;
+}
+
+.registration-terms a {
+  color: #ff8a05;
+}
+
 .registration-submit {
   justify-self: start;
   padding: 12px 20px;

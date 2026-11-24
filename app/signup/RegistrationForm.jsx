@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { PRIVACY_PATH, PRIVACY_VERSION, TERMS_PATH, TERMS_VERSION } from "../../data/legal";
 
 const DEVELOPMENT_ENDPOINT = "https://d2ihao468hpdsu.cloudfront.net/auth/register";
+const DEFAULT_PRODUCT = "interior-quote-generator";
+const API_FIELDS = ["email", "name", "phone", "company", "terms"];
 
 function getRegistrationEndpoint() {
   if (process.env.NEXT_PUBLIC_REGISTRATION_API_URL) {
@@ -19,11 +22,13 @@ function normalizeIndianPhone(phone) {
   let digits = phone.replace(/\D/g, "");
   if (digits.startsWith("91") && digits.length === 12) {
     digits = digits.slice(2);
+  } else if (digits.startsWith("0") && digits.length === 11) {
+    digits = digits.slice(1);
   }
   return digits;
 }
 
-function validateRegistration({ email, name, phone }) {
+function validateRegistration({ email, name, phone, termsAccepted }) {
   const errors = {};
   const normalizedEmail = email.trim();
   const phoneDigits = normalizeIndianPhone(phone);
@@ -44,6 +49,10 @@ function validateRegistration({ email, name, phone }) {
     errors.phone = "Enter a valid 10-digit Indian mobile number.";
   }
 
+  if (!termsAccepted) {
+    errors.terms = "Accept the terms and privacy notice to continue.";
+  }
+
   return errors;
 }
 
@@ -53,13 +62,12 @@ function getApiFieldErrors(data) {
 
   return Object.fromEntries(
     Object.entries(fields).filter(
-      ([field, message]) =>
-        ["email", "name", "phone", "company"].includes(field) && typeof message === "string"
+      ([field, message]) => API_FIELDS.includes(field) && typeof message === "string"
     )
   );
 }
 
-export default function RegistrationForm() {
+export default function RegistrationForm({ product = DEFAULT_PRODUCT }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
@@ -73,12 +81,14 @@ export default function RegistrationForm() {
     const formData = new FormData(form);
     const phoneDigits = normalizeIndianPhone(String(formData.get("phone") || ""));
     const values = {
-      email: String(formData.get("email") || "").trim(),
+      email: String(formData.get("email") || "")
+        .trim()
+        .toLowerCase(),
       name: String(formData.get("name") || "").trim(),
       phone: String(formData.get("phone") || "").trim(),
       company: String(formData.get("company") || "").trim(),
+      termsAccepted: formData.get("terms") === "on",
     };
-    values.email = values.email.toLowerCase();
 
     const validationErrors = validateRegistration(values);
     setErrors(validationErrors);
@@ -97,6 +107,10 @@ export default function RegistrationForm() {
           name: values.name,
           phone: `+91${phoneDigits}`,
           ...(values.company ? { company: values.company } : {}),
+          product,
+          termsAccepted: true,
+          termsVersion: TERMS_VERSION,
+          privacyVersion: PRIVACY_VERSION,
         }),
       });
 
@@ -107,10 +121,20 @@ export default function RegistrationForm() {
         // Fall through to the generic response message for non-JSON errors.
       }
 
-      if (response.status === 422 || data?.error?.code === "EMAIL_ALREADY_REGISTERED") {
+      // Email and/or phone already belongs to an active account. Keep everything the
+      // user typed, highlight the field(s) in use and let them correct and resubmit.
+      if (response.status === 409 || data?.error?.code === "ALREADY_REGISTERED") {
+        const taken = getApiFieldErrors(data);
+        setErrors(taken);
+        const which =
+          taken.email && taken.phone
+            ? "This email and phone number are"
+            : taken.phone
+              ? "This phone number is"
+              : "This email is";
         setResult({
           type: "duplicate",
-          message: "An account with this email already exists. Please log in to continue.",
+          message: `${which} already registered. Log in, or change the highlighted details and submit again.`,
         });
         return;
       }
@@ -136,7 +160,7 @@ export default function RegistrationForm() {
 
       setResult({
         type: "success",
-        message: "Registration received, pending activation",
+        email: typeof data?.email === "string" ? data.email : null,
       });
       form.reset();
     } catch {
@@ -161,7 +185,10 @@ export default function RegistrationForm() {
   if (result?.type === "success") {
     return (
       <div className="registration-result success" role="status" aria-live="polite">
-        {result.message}
+        <p>
+          <strong>Registration received.</strong>
+        </p>
+        <p>Verify your email{result.email ? ` (${result.email})` : ""} to activate your account.</p>
       </div>
     );
   }
@@ -209,7 +236,7 @@ export default function RegistrationForm() {
 
         <div className="registration-field">
           <label htmlFor="registration-company">
-            Company <span>(optional)</span>
+            Business name <span>(optional)</span>
           </label>
           <input
             autoComplete="organization"
@@ -262,6 +289,35 @@ export default function RegistrationForm() {
           )}
         </div>
 
+        <div className="registration-field registration-terms">
+          <div className="checkbox-row">
+            <input
+              aria-describedby={errors.terms ? "registration-terms-error" : undefined}
+              aria-invalid={Boolean(errors.terms)}
+              id="registration-terms"
+              name="terms"
+              onChange={handleFieldChange}
+              required
+              type="checkbox"
+            />
+            <label htmlFor="registration-terms">
+              I agree to the{" "}
+              <a href={TERMS_PATH} rel="noopener noreferrer" target="_blank">
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a href={PRIVACY_PATH} rel="noopener noreferrer" target="_blank">
+                Privacy Notice
+              </a>
+            </label>
+          </div>
+          {errors.terms && (
+            <p className="field-error" id="registration-terms-error">
+              {errors.terms}
+            </p>
+          )}
+        </div>
+
         {result?.type === "duplicate" ? (
           <div className="registration-result duplicate" role="alert">
             <p>{result.message}</p>
@@ -276,7 +332,7 @@ export default function RegistrationForm() {
         ) : null}
 
         <button className="registration-submit" disabled={isSubmitting} type="submit">
-          {isSubmitting ? "Submitting..." : "Request access"}
+          {isSubmitting ? "Submitting..." : "Create account"}
         </button>
       </form>
     </>
