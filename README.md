@@ -140,3 +140,22 @@ The S3 bucket and CloudFront distribution are managed by the [nmatix-infra](http
 
 - [nmatix-infra](https://github.com/nmatix/nmatix-infra) - Backend infrastructure (Lambda, API, CDK)
 - [interior-quote-generator-proj](https://github.com/nmatix/interior-quote-generator-proj) - Project documentation and issue tracking
+
+## Legal documents
+
+The Terms of Service and Privacy Notice are published at `/terms` and `/privacy`. Before
+publishing an initial version or an update, have the text approved by the business owner and
+reviewed by a qualified legal adviser. In particular, verify data handling, retention, contact
+details, and the document's consistency with applicable Indian data protection law. Do not deploy
+these documents as approved until those reviews are complete.
+
+When changing either document:
+
+1. Edit the relevant page and update its version and effective date in `data/legal.js`.
+2. Update the matching terms and privacy versions in `REGISTRATION_SETTINGS` in
+   `nmatix-infra/cdk/config.py` in the same release. The website and registration backend must
+   advertise the same versions; the backend rejects acceptance of an older version.
+3. Review the final rendered pages and registration flow, then deploy the website and infrastructure
+   changes together. Record the effective date and version in both repositories.
+
+The current website constants are `TERMS_VERSION` and `PRIVACY_VERSION` in `data/legal.js`.
