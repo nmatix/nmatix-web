@@ -40,6 +40,6 @@ describe("Login Page", () => {
   it("asks users to sign up if they need access", () => {
     render(<LoginPage />);
 
-    expect(screen.getByText(/Need to request access\?/)).toBeTruthy();
+    expect(screen.getByText(/New to nMATIX\?/)).toBeTruthy();
   });
 });

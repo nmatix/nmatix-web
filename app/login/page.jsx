@@ -11,7 +11,7 @@ export default function LoginPage() {
         <h1 id="login-title">Login</h1>
         <p>Login access will be available after account activation.</p>
         <p>
-          Need to request access? <Link href="/signup">Sign-up</Link>
+          New to nMATIX? <Link href="/signup">Sign-up</Link>
         </p>
       </section>
     </main>
