@@ -3,20 +3,10 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { PRIVACY_PATH, PRIVACY_VERSION, TERMS_PATH, TERMS_VERSION } from "../../data/legal";
+import { getAuthEndpoint } from "./authApi";
 
-const DEVELOPMENT_ENDPOINT = "https://d2ihao468hpdsu.cloudfront.net/auth/register";
 const DEFAULT_PRODUCT = "interior-quote-generator";
 const API_FIELDS = ["email", "name", "phone", "company", "terms"];
-
-function getRegistrationEndpoint() {
-  if (process.env.NEXT_PUBLIC_REGISTRATION_API_URL) {
-    return process.env.NEXT_PUBLIC_REGISTRATION_API_URL;
-  }
-
-  // The deployed CloudFront distribution routes /auth/* to the auth API.
-  // Local Next.js development uses the dedicated dev CloudFront endpoint.
-  return process.env.NODE_ENV === "development" ? DEVELOPMENT_ENDPOINT : "/auth/register";
-}
 
 function normalizeIndianPhone(phone) {
   let digits = phone.replace(/\D/g, "");
@@ -67,7 +57,7 @@ function getApiFieldErrors(data) {
   );
 }
 
-export default function RegistrationForm({ product = DEFAULT_PRODUCT }) {
+export default function RegistrationForm({ product = DEFAULT_PRODUCT, onRegistered }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
@@ -99,7 +89,7 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(getRegistrationEndpoint(), {
+      const response = await fetch(getAuthEndpoint("register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -158,11 +148,8 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT }) {
         return;
       }
 
-      setResult({
-        type: "success",
-        email: typeof data?.email === "string" ? data.email : null,
-      });
       form.reset();
+      onRegistered?.(data);
     } catch {
       setResult({
         type: "error",
@@ -179,17 +166,6 @@ export default function RegistrationForm({ product = DEFAULT_PRODUCT }) {
     setResult(null);
     setErrors((currentErrors) =>
       currentErrors[name] ? { ...currentErrors, [name]: undefined } : currentErrors
-    );
-  }
-
-  if (result?.type === "success") {
-    return (
-      <div className="registration-result success" role="status" aria-live="polite">
-        <p>
-          <strong>Registration received.</strong>
-        </p>
-        <p>Verify your email{result.email ? ` (${result.email})` : ""} to activate your account.</p>
-      </div>
     );
   }
 

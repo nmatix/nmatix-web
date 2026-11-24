@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PRIVACY_VERSION, TERMS_VERSION } from "../../data/legal";
 import RegistrationForm from "./RegistrationForm";
@@ -42,9 +42,12 @@ function mockResponse(status, body) {
   fetch.mockResolvedValue({ ok: status < 400, status, json: async () => body });
 }
 
+let onRegistered;
+
 describe("RegistrationForm", () => {
   beforeEach(() => {
     vi.stubGlobal("fetch", vi.fn());
+    onRegistered = vi.fn();
   });
 
   afterEach(() => {
@@ -53,7 +56,7 @@ describe("RegistrationForm", () => {
   });
 
   it("shows helpful validation errors without sending invalid data", () => {
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     expect(screen.getByLabelText("Country calling code").value).toBe("+91");
     expect(screen.getByLabelText("Country calling code").disabled).toBe(true);
 
@@ -67,7 +70,7 @@ describe("RegistrationForm", () => {
   });
 
   it("requires the terms and privacy notice to be accepted", () => {
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails({ acceptTerms: false });
 
     submitForm();
@@ -78,7 +81,7 @@ describe("RegistrationForm", () => {
   });
 
   it("links to the terms and privacy documents in a new tab", () => {
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
 
     const terms = screen.getByRole("link", { name: "Terms of Service" });
     const privacy = screen.getByRole("link", { name: "Privacy Notice" });
@@ -95,32 +98,33 @@ describe("RegistrationForm", () => {
         resolveRequest = resolve;
       })
     );
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails();
 
     submitForm();
 
     expect(screen.getByRole("button", { name: "Submitting..." }).disabled).toBe(true);
     resolveRequest({ ok: true, status: 201, json: async () => ({ id: "usr_123" }) });
-    expect(await screen.findByText("Registration received.")).toBeTruthy();
+    await waitFor(() => expect(onRegistered).toHaveBeenCalledWith({ id: "usr_123" }));
   });
 
-  it("posts normalized details with product and terms acceptance, then asks to verify email", async () => {
+  it("posts normalized details with product and terms acceptance, then hands over the registration", async () => {
     mockResponse(201, {
       id: "usr_123",
       status: "unverified",
       email: "p***@example.com",
       nextStep: "verify_email",
     });
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails({ company: "Acme Interiors", phone: "098765 43210" });
 
     submitForm();
 
-    expect(await screen.findByText("Registration received.")).toBeTruthy();
-    expect(
-      screen.getByText("Verify your email (p***@example.com) to activate your account.")
-    ).toBeTruthy();
+    await waitFor(() => expect(onRegistered).toHaveBeenCalledTimes(1));
+    expect(onRegistered.mock.calls[0][0]).toMatchObject({
+      id: "usr_123",
+      email: "p***@example.com",
+    });
     expect(fetch).toHaveBeenCalledWith(
       "/auth/register",
       expect.objectContaining({
@@ -142,12 +146,12 @@ describe("RegistrationForm", () => {
 
   it("omits the business name when it is left empty", async () => {
     mockResponse(201, { id: "usr_123" });
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails();
 
     submitForm();
 
-    await screen.findByText("Registration received.");
+    await waitFor(() => expect(onRegistered).toHaveBeenCalled());
     expect(JSON.parse(fetch.mock.calls[0][1].body)).not.toHaveProperty("company");
   });
 
@@ -159,7 +163,7 @@ describe("RegistrationForm", () => {
         fields: { email: "This email is already registered." },
       },
     });
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails({ company: "Acme Interiors" });
 
     submitForm();
@@ -189,7 +193,7 @@ describe("RegistrationForm", () => {
         },
       },
     });
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails();
 
     submitForm();
@@ -209,7 +213,7 @@ describe("RegistrationForm", () => {
         fields: { phone: "This phone number is already registered." },
       },
     });
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails();
     submitForm();
     await screen.findByText("This phone number is already registered.");
@@ -220,7 +224,7 @@ describe("RegistrationForm", () => {
     mockResponse(201, { id: "usr_456", email: "p***@example.com" });
     submitForm();
 
-    expect(await screen.findByText("Registration received.")).toBeTruthy();
+    await waitFor(() => expect(onRegistered).toHaveBeenCalled());
     expect(JSON.parse(fetch.mock.calls[1][1].body).phone).toBe("+919123456789");
   });
 
@@ -234,7 +238,7 @@ describe("RegistrationForm", () => {
         },
       },
     });
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails();
 
     submitForm();
@@ -249,7 +253,7 @@ describe("RegistrationForm", () => {
 
   it("shows a connection error when the request fails", async () => {
     fetch.mockRejectedValue(new Error("network down"));
-    render(<RegistrationForm />);
+    render(<RegistrationForm onRegistered={onRegistered} />);
     enterValidDetails();
 
     submitForm();
