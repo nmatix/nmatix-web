@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useAuth } from "./AuthProvider";
+import NotAvailable from "./NotAvailable";
 import RequireAuth from "./RequireAuth";
+import { useAccess } from "./useAccess";
 
 /**
  * Renders children only for platform admins (#29, #133). This only decides what the page
@@ -17,15 +17,7 @@ export default function RequireAdmin({ children }) {
 }
 
 function AdminGate({ children }) {
-  const { user } = useAuth();
-  if (!user?.isAdmin) {
-    return (
-      <section className="registration-card" aria-labelledby="admin-denied-title">
-        <h1 id="admin-denied-title">Not available</h1>
-        <p>This area is only for Nmatix admins.</p>
-        <Link href="/dashboard/">Back to your dashboard</Link>
-      </section>
-    );
-  }
+  const { isAdmin } = useAccess();
+  if (!isAdmin) return <NotAvailable message="This area is only for Nmatix admins." />;
   return children;
 }
