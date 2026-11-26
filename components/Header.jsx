@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "../app/auth/AuthProvider";
 import { products } from "../data/products";
 
 function NavigationLink({ href, label, currentPath }) {
@@ -15,6 +16,47 @@ function NavigationLink({ href, label, currentPath }) {
   }
 
   return <Link href={href}>{label}</Link>;
+}
+
+// Account area (#29): Login when signed out; Dashboard, Admin (platform admins only),
+// the user's first name and Log out when signed in. Nothing while the session is being
+// restored, so the header never flashes "Login" for a signed-in user. Built from the
+// signed-in user's /me profile; the server still enforces every permission.
+function AccountActions({ currentPath }) {
+  const { status, user, signOut } = useAuth();
+  const router = useRouter();
+
+  if (status === "loading") return <div className="account-actions" aria-hidden="true" />;
+
+  if (status !== "signedIn") {
+    return (
+      <div className="account-actions">
+        <Link className="login-link" href="/login">
+          Login
+        </Link>
+      </div>
+    );
+  }
+
+  const firstName = (user?.name || "").trim().split(/\s+/)[0] || "Account";
+
+  async function handleLogout() {
+    await signOut();
+    router.replace("/");
+  }
+
+  return (
+    <div className="account-actions">
+      <NavigationLink currentPath={currentPath} href="/dashboard" label="Dashboard" />
+      {user?.isAdmin && <NavigationLink currentPath={currentPath} href="/admin" label="Admin" />}
+      <span className="account-name" title={user?.email || undefined}>
+        {firstName}
+      </span>
+      <button className="link-button logout-button" onClick={handleLogout} type="button">
+        Log out
+      </button>
+    </div>
+  );
 }
 
 export default function Header() {
@@ -122,11 +164,7 @@ export default function Header() {
             <NavigationLink currentPath={currentPath} href="/contact" label="Contact" />
           </nav>
 
-          <div className="account-actions">
-            <Link className="login-link" href="/login">
-              Login
-            </Link>
-          </div>
+          <AccountActions currentPath={currentPath} />
         </div>
       </header>
     </div>

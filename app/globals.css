@@ -155,6 +155,15 @@ header {
   background: #ffa033;
   text-decoration: none;
 }
+.account-actions .account-name {
+  max-width: 12ch;
+  overflow: hidden;
+  color: #d0d0d0;
+  text-overflow: ellipsis;
+}
+.account-actions .logout-button {
+  min-height: auto;
+}
 .account-actions a,
 .registration-login-prompt a,
 .login-placeholder a {
