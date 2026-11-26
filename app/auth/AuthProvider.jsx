@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { getJson, postJson } from "../signup/authApi";
+import { appRequest, getJson, postJson } from "../signup/authApi";
 
 /**
  * Session state for the whole site (#130).
@@ -88,19 +88,32 @@ export function AuthProvider({ children }) {
     refreshRef.current = refresh;
   }, [refresh]);
 
-  // Calls an auth API route with the session token; refreshes once on 401.
-  const authFetch = useCallback(
-    async (path, { method = "GET", body } = {}) => {
-      const send = () => {
-        const headers = { "X-Session-Token": tokenRef.current || "" };
-        return method === "GET" ? getJson(path, { headers }) : postJson(path, body, { headers });
-      };
-      let result = await send();
-      if (result.status === 401 && (await refresh())) result = await send();
+  // Sends a request with the session token; refreshes the token once on 401.
+  const withSession = useCallback(
+    async (send) => {
+      const headers = () => ({ "X-Session-Token": tokenRef.current || "" });
+      let result = await send(headers());
+      if (result.status === 401 && (await refresh())) result = await send(headers());
       if (result.status === 401) clearSession();
       return result;
     },
     [refresh, clearSession]
+  );
+
+  // An auth API route (/auth/*) with the session token.
+  const authFetch = useCallback(
+    (path, { method = "GET", body } = {}) =>
+      withSession((headers) =>
+        method === "GET" ? getJson(path, { headers }) : postJson(path, body, { headers })
+      ),
+    [withSession]
+  );
+
+  // A product API route (/app/*, #157) with the session token.
+  const appFetch = useCallback(
+    (path, { method = "GET", body } = {}) =>
+      withSession((headers) => appRequest(path, { method, body, headers })),
+    [withSession]
   );
 
   // Restore the session after a page load, only if this browser signed in before
@@ -165,8 +178,8 @@ export function AuthProvider({ children }) {
   }, [clearSession, state.user]);
 
   const value = useMemo(
-    () => ({ ...state, signIn, signInPreview, signOut, authFetch, refresh }),
-    [state, signIn, signInPreview, signOut, authFetch, refresh]
+    () => ({ ...state, signIn, signInPreview, signOut, authFetch, appFetch, refresh }),
+    [state, signIn, signInPreview, signOut, authFetch, appFetch, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

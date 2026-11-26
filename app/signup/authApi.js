@@ -1,6 +1,11 @@
-// Auth API endpoints. CloudFront routes /auth/* to the auth API; local Next.js
-// development talks to the dev CloudFront distribution directly.
+// API endpoints. CloudFront routes /auth/* to the auth API and /app/* to the product API
+// (#157); local Next.js development talks to the dev CloudFront distribution directly.
 const DEVELOPMENT_AUTH_BASE = "https://d2ihao468hpdsu.cloudfront.net/auth";
+const DEVELOPMENT_APP_BASE = "https://d2ihao468hpdsu.cloudfront.net/app";
+
+export function getAppBase() {
+  return process.env.NODE_ENV === "development" ? DEVELOPMENT_APP_BASE : "/app";
+}
 
 export function getAuthBase() {
   // Backwards compatible with the old full register URL override
@@ -13,8 +18,8 @@ export function getAuthEndpoint(path) {
   return `${getAuthBase()}/${path}`;
 }
 
-async function requestJson(path, { method = "GET", body, headers = {} } = {}) {
-  const response = await fetch(getAuthEndpoint(path), {
+async function requestJson(path, { method = "GET", body, headers = {}, base } = {}) {
+  const response = await fetch(base ? `${base}/${path}` : getAuthEndpoint(path), {
     method,
     // Same origin (CloudFront /auth/*): the HttpOnly session cookie travels with
     // /auth/session requests automatically; page code never reads it.
@@ -39,4 +44,10 @@ export function postJson(path, body, { headers } = {}) {
 
 export function getJson(path, { headers } = {}) {
   return requestJson(path, { method: "GET", headers });
+}
+
+// Product API (/app/*) request; callers go through AuthProvider's appFetch, which adds
+// the session token and refreshes it once on 401.
+export function appRequest(path, { method = "GET", body, headers } = {}) {
+  return requestJson(path, { method, body, headers, base: getAppBase() });
 }
