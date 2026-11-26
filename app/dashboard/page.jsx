@@ -1,21 +1,15 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import DashboardHome from "./DashboardHome";
 
 export const metadata = {
-  title: "Dashboard preview | nMATIX Technologies",
+  title: "Dashboard | nMATIX Technologies",
+  robots: { index: false },
 };
 
-export default function DashboardPreviewPage() {
-  if (process.env.NODE_ENV !== "development") notFound();
-
+// Signed-in users only (RequireAuth sends others to /login/). The full dashboard is #156.
+export default function DashboardPage() {
   return (
     <main className="container registration-page">
-      <section className="registration-card" aria-labelledby="dashboard-title">
-        <h1 id="dashboard-title">Dashboard preview</h1>
-        <p>You completed the local sign-in preview. No account session was created.</p>
-        <p>Your subscribed products will appear here when the account service is connected.</p>
-        <Link href="/products/interior-quote-generator">Explore products</Link>
-      </section>
+      <DashboardHome />
     </main>
   );
 }

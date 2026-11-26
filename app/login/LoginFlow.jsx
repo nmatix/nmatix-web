@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuth } from "../auth/AuthProvider";
 import { postJson } from "../signup/authApi";
 
 const CODE_LENGTH = 6;
 const RESEND_SECONDS = 60;
+const DASHBOARD = "/dashboard/";
 
 function formatCountdown(seconds) {
   const minutes = Math.floor(seconds / 60);
@@ -32,8 +34,12 @@ function getErrorMessage(data, status) {
 }
 
 export default function LoginFlow() {
-  const isDevelopmentLogin = process.env.NODE_ENV === "development";
+  // Local preview (no email, any code) during `npm run dev`; set
+  // NEXT_PUBLIC_LOGIN_PREVIEW=0 to use the real dev auth API locally instead.
+  const isDevelopmentLogin =
+    process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_LOGIN_PREVIEW !== "0";
   const router = useRouter();
+  const { status: authStatus, signIn, signInPreview } = useAuth();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [codeSent, setCodeSent] = useState(false);
@@ -41,6 +47,11 @@ export default function LoginFlow() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+
+  // Already signed in (e.g. after a refresh): go straight to the dashboard
+  useEffect(() => {
+    if (authStatus === "signedIn") router.replace(DASHBOARD);
+  }, [authStatus, router]);
 
   useEffect(() => {
     if (!codeSent || secondsLeft <= 0) return undefined;
@@ -66,7 +77,7 @@ export default function LoginFlow() {
         return;
       }
 
-      const { status, ok, data } = await postJson("otp/request", { email: normalizedEmail });
+      const { status, ok, data } = await postJson("login/request", { email: normalizedEmail });
       if (!ok) {
         const retrySeconds = Number(data?.retryAfterSeconds || data?.resendAfterSeconds);
         if (retrySeconds > 0) setSecondsLeft(retrySeconds);
@@ -101,21 +112,23 @@ export default function LoginFlow() {
     setNotice("");
     try {
       if (isDevelopmentLogin) {
-        router.replace("/dashboard");
+        signInPreview(email);
+        router.replace(DASHBOARD);
         return;
       }
 
-      const { status, ok, data } = await postJson("otp/verify", {
+      const { status, ok, data } = await postJson("login/verify", {
         email,
         code: normalizedCode,
       });
-      if (!ok) {
+      if (!ok || !data.idToken) {
         setError(getErrorMessage(data, status));
         setCode("");
         return;
       }
 
-      router.replace("/dashboard");
+      signIn(data);
+      router.replace(DASHBOARD);
     } catch {
       setError("We couldn't connect to the sign-in service. Please try again.");
     } finally {

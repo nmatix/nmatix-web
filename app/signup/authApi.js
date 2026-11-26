@@ -13,13 +13,14 @@ export function getAuthEndpoint(path) {
   return `${getAuthBase()}/${path}`;
 }
 
-// POST JSON and return { status, ok, data }; data is {} when the body is not JSON.
-// Network failures throw, so callers can show a connection message.
-export async function postJson(path, body) {
+async function requestJson(path, { method = "GET", body, headers = {} } = {}) {
   const response = await fetch(getAuthEndpoint(path), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    method,
+    // Same origin (CloudFront /auth/*): the HttpOnly session cookie travels with
+    // /auth/session requests automatically; page code never reads it.
+    credentials: "same-origin",
+    headers: body === undefined ? headers : { "Content-Type": "application/json", ...headers },
+    body: body === undefined ? undefined : JSON.stringify(body),
   });
   let data = {};
   try {
@@ -28,4 +29,14 @@ export async function postJson(path, body) {
     // Non-JSON error bodies fall back to generic messages
   }
   return { status: response.status, ok: response.ok, data: data || {} };
+}
+
+// POST JSON and return { status, ok, data }; data is {} when the body is not JSON.
+// Network failures throw, so callers can show a connection message.
+export function postJson(path, body, { headers } = {}) {
+  return requestJson(path, { method: "POST", body, headers });
+}
+
+export function getJson(path, { headers } = {}) {
+  return requestJson(path, { method: "GET", headers });
 }

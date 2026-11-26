@@ -757,6 +757,11 @@ footer nav a:focus-visible {
   min-height: 65px; /* Turnstile widget height, avoids layout shift */
 }
 
+.auth-loading {
+  padding: 24px 0;
+  color: #b8b8b8;
+}
+
 .registration-login-prompt {
   margin: 22px 0 0;
 }

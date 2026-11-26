@@ -23,9 +23,15 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-The login page uses a development-only preview flow: submit any valid email address, then enter
-any six-digit code to reach the dashboard preview. It does not send email or create a session.
-Other builds use the auth API.
+Login uses the auth API (`/auth/login/request`, `/auth/login/verify`) and keeps the session in
+`app/auth/AuthProvider.jsx`: the id token stays in memory and is sent as `X-Session-Token`; the
+refresh token is an HttpOnly cookie set by the API, renewed before expiry and on page load.
+
+During `npm run dev` the login page runs a **preview** by default: any valid email, then any
+six-digit code, opens the dashboard with no email sent and no session. Set
+`NEXT_PUBLIC_LOGIN_PREVIEW=0` to use the real dev auth API locally instead. (From `localhost` the
+session cookie is not sent, so a page reload signs you out; on the deployed dev site sessions
+survive reloads.)
 
 ### Scripts
 
