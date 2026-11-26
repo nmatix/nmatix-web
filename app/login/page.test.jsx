@@ -98,7 +98,9 @@ describe("Login Page", () => {
 
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "user@example.com" } });
     fireEvent.click(screen.getByRole("button", { name: "Send code" }));
-    fireEvent.change(await screen.findByLabelText("One-time code"), { target: { value: "482913" } });
+    fireEvent.change(await screen.findByLabelText("One-time code"), {
+      target: { value: "482913" },
+    });
     fireEvent.click(screen.getByRole("button", { name: "Verify and log in" }));
 
     expect((await screen.findByRole("alert")).textContent).toContain("That code has expired");

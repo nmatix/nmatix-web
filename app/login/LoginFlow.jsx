@@ -44,10 +44,7 @@ export default function LoginFlow() {
 
   useEffect(() => {
     if (!codeSent || secondsLeft <= 0) return undefined;
-    const timer = setTimeout(
-      () => setSecondsLeft((remaining) => Math.max(0, remaining - 1)),
-      1000
-    );
+    const timer = setTimeout(() => setSecondsLeft((remaining) => Math.max(0, remaining - 1)), 1000);
     return () => clearTimeout(timer);
   }, [codeSent, secondsLeft]);
 
