@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { useAuth } from "../auth/AuthProvider";
 import RequireAuth from "../auth/RequireAuth";
+import { useAccess } from "../auth/useAccess";
 
 function Welcome() {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAccess();
   return (
     <section className="registration-card" aria-labelledby="dashboard-title">
       <h1 id="dashboard-title">Welcome{user?.name ? `, ${user.name}` : ""}</h1>
       {user?.preview && (
         <p className="field-hint">Local preview: no account session was created.</p>
       )}
-      <p>You are logged in{user?.isAdmin ? " as an internal admin" : ""}.</p>
+      <p>You are logged in{isAdmin ? " as an internal admin" : ""}.</p>
       <p>
         Your dashboard is on its way: setup steps, your rate card and your estimates will appear
         here.

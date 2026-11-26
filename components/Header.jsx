@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../app/auth/AuthProvider";
+import { useAccess } from "../app/auth/useAccess";
 import { products } from "../data/products";
 
 function NavigationLink({ href, label, currentPath }) {
@@ -24,6 +25,7 @@ function NavigationLink({ href, label, currentPath }) {
 // signed-in user's /me profile; the server still enforces every permission.
 function AccountActions({ currentPath }) {
   const { status, user, signOut } = useAuth();
+  const { isAdmin } = useAccess();
   const router = useRouter();
 
   if (status === "loading") return <div className="account-actions" aria-hidden="true" />;
@@ -48,7 +50,7 @@ function AccountActions({ currentPath }) {
   return (
     <div className="account-actions">
       <NavigationLink currentPath={currentPath} href="/dashboard" label="Dashboard" />
-      {user?.isAdmin && <NavigationLink currentPath={currentPath} href="/admin" label="Admin" />}
+      {isAdmin && <NavigationLink currentPath={currentPath} href="/admin" label="Admin" />}
       <span className="account-name" title={user?.email || undefined}>
         {firstName}
       </span>
