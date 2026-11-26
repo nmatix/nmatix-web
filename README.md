@@ -23,6 +23,10 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+The login page uses a development-only preview flow: submit any valid email address, then enter
+any six-digit code to reach the dashboard preview. It does not send email or create a session.
+Other builds use the auth API.
+
 ### Scripts
 
 | Script                 | Description                   |
