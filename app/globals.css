@@ -1403,3 +1403,240 @@ footer nav a:focus-visible {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* Settings (#30) */
+.settings-layout {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.settings-nav {
+  display: grid;
+  gap: 4px;
+}
+.settings-nav a,
+.settings-nav span {
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: #d0d0d0;
+  text-decoration: none;
+}
+.settings-nav a:hover {
+  background: #1c1c1c;
+}
+.settings-nav [aria-current="page"] {
+  background: #1c1c1c;
+  color: #ff8a05;
+  font-weight: bold;
+}
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.profile-form h2 {
+  margin-bottom: 4px;
+}
+.profile-section {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 16px 0 0;
+  border: 0;
+  border-top: 1px solid #2e2e2e;
+}
+.profile-section > legend {
+  padding: 0 0 4px;
+  color: #ff8a05;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.registration-field textarea {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #555;
+  border-radius: 5px;
+  background: #080808;
+  color: white;
+  font: inherit;
+  resize: vertical;
+}
+.registration-field textarea:focus {
+  outline: 2px solid #ff8a05;
+  outline-offset: 1px;
+}
+.registration-field textarea[aria-invalid="true"] {
+  border-color: #ff6b6b;
+}
+.profile-label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 600;
+}
+.logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.logo-preview,
+.logo-placeholder {
+  width: 96px;
+  height: 96px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #fff;
+  object-fit: contain;
+}
+.logo-placeholder {
+  display: grid;
+  place-items: center;
+  background: #111;
+  color: #8a8a8a;
+  font-size: 13px;
+}
+.logo-actions {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+}
+.logo-upload {
+  display: inline-flex;
+  align-items: center;
+}
+.logo-upload:focus-within {
+  outline: 2px solid #ff8a05;
+  outline-offset: 2px;
+}
+.colour-row {
+  display: flex;
+  gap: 10px;
+}
+.colour-swatch {
+  flex: 0 0 52px;
+  height: 46px;
+  padding: 2px !important;
+  cursor: pointer;
+}
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.radio-group legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 600;
+}
+.radio-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.radio-group .field-hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+.profile-actions .registration-submit {
+  width: auto;
+  min-width: 140px;
+}
+.profile-saved {
+  margin: 0;
+  color: #7fd6a4;
+}
+.profile-saved a {
+  color: #ff8a05;
+}
+.estimate-preview {
+  position: sticky;
+  top: 20px;
+}
+.preview-label {
+  margin: 0 0 10px !important;
+  color: #a9a9a9;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.preview-sheet {
+  padding: 18px;
+  border-top: 6px solid #ff8a05;
+  border-radius: 6px;
+  background: #fff;
+  color: #222;
+  font-size: 14px;
+}
+.preview-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.preview-logo {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+.preview-logo-empty {
+  display: grid;
+  place-items: center;
+  border: 1px dashed #bbb;
+  border-radius: 6px;
+  color: #999;
+  font-size: 12px;
+}
+.preview-business {
+  margin: 0 !important;
+  font-size: 18px;
+  font-weight: bold;
+}
+.preview-contact,
+.preview-meta {
+  margin: 2px 0 0 !important;
+  color: #555;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.preview-title {
+  margin: 0 !important;
+  padding-top: 12px;
+  border-top: 1px solid #e5e5e5;
+  font-weight: bold;
+}
+.preview-disclaimer {
+  margin: 12px 0 0 !important;
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
+}
+@media (max-width: 900px) {
+  .settings-layout,
+  .profile-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .settings-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .estimate-preview {
+    position: static;
+  }
+}
