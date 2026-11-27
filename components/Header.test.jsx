@@ -223,7 +223,8 @@ describe("Header", () => {
       expect(menu.textContent).toContain("Ravi Kumar");
       expect(menu.textContent).toContain("ravi@example.com");
       const items = screen.getAllByRole("menuitem");
-      expect(items.map((i) => i.textContent)).toEqual(["Dashboard", "Log out"]);
+      expect(items.map((i) => i.textContent)).toEqual(["Dashboard", "Settings", "Log out"]);
+      expect(items[1].getAttribute("href")).toBe("/settings/profile/");
       expect(items[0].getAttribute("href")).toBe("/dashboard/");
     });
 
