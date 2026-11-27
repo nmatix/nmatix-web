@@ -1,5 +1,5 @@
-// Setup checklist steps (PRD 7.2, #32). The server decides each step's status and whether
-// its screen exists yet (GET /app/dashboard, #157); titles and links live here.
+// One-time setup steps (PRD 7.2 v0.6, #32). The server decides each step's status and
+// whether its screen exists yet (GET /app/setup); titles and links live here.
 export const SETUP_STEPS = {
   business_profile: {
     title: "Business profile",
@@ -30,11 +30,5 @@ export const SETUP_STEPS = {
     description: "GST, fees, contingency, wall height and the price range.",
     href: "/packages/#adjustments",
     action: "Set adjustments",
-  },
-  first_estimate: {
-    title: "Create your first estimate",
-    description: "Run a real plan through the estimate flow. Your first estimate is free.",
-    href: "/estimates/new/",
-    action: "New estimate",
   },
 };

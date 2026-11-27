@@ -1,7 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useAuth } from "../auth/AuthProvider";
 import RequireAuth from "../auth/RequireAuth";
+import { setupPending, useSetup } from "../auth/SetupProvider";
 import {
   ActivityPanel,
   AdminPanel,
@@ -9,13 +12,31 @@ import {
   FreeEstimateBanner,
   RateCardPanel,
 } from "./panels";
-import SetupChecklist from "./SetupChecklist";
 import { useDashboard } from "./useDashboard";
 
 /**
- * The contractor's home page after every login (#158, PRD 7.4), laid out as in the #158
- * wireframe. Cards show empty states until the features behind them are built.
+ * The contractor's home page after login once setup is complete (#158, PRD 7.4 v0.6).
+ * Contractors who haven't finished the one-time setup are sent to Get started (#32).
  */
+function SetupGate({ children }) {
+  const setup = useSetup();
+  const router = useRouter();
+  const pending = setupPending(setup);
+
+  useEffect(() => {
+    if (pending) router.replace("/get-started/");
+  }, [pending, router]);
+
+  if (setup.status === "loading" || pending) {
+    return (
+      <p className="auth-loading" role="status" aria-live="polite">
+        Loading your dashboard...
+      </p>
+    );
+  }
+  return children;
+}
+
 function Dashboard() {
   const { user } = useAuth();
   const dashboard = useDashboard();
@@ -23,12 +44,19 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      <div className="dashboard-header">
-        <h1 id="dashboard-title">{firstName ? `Welcome back, ${firstName}!` : "Welcome back!"}</h1>
-        <p>Here&apos;s what&apos;s happening with your nMATIX account.</p>
-        {user?.preview && (
-          <p className="field-hint">Local preview: no account session was created.</p>
-        )}
+      <div className="dashboard-header dashboard-header-row">
+        <div>
+          <h1 id="dashboard-title">
+            {firstName ? `Welcome back, ${firstName}!` : "Welcome back!"}
+          </h1>
+          <p>Here&apos;s what&apos;s happening with your nMATIX account.</p>
+          {user?.preview && (
+            <p className="field-hint">Local preview: no account session was created.</p>
+          )}
+        </div>
+        <span className="dash-button is-disabled" aria-disabled="true" title="Coming soon">
+          New estimate (coming soon)
+        </span>
       </div>
 
       {dashboard.status === "loading" && (
@@ -53,27 +81,23 @@ function Dashboard() {
 }
 
 function DashboardGrid({ data }) {
-  const rateCardStep = data.checklist?.steps?.find((s) => s.id === "rate_card");
   // Two columns on wide screens, paired by row as in the wireframe; one column on phones.
   return (
     <div className="dash-grid">
       <div className="dash-main">
-        <SetupChecklist checklist={data.checklist} />
-      </div>
-      <div className="dash-side">
-        <RateCardPanel available={Boolean(rateCardStep?.available)} rateCard={data.rateCard} />
-      </div>
-      <div className="dash-main">
         <EstimatesPanel estimates={data.estimates} />
       </div>
       <div className="dash-side">
-        <ActivityPanel activity={data.recentActivity} />
+        <RateCardPanel rateCard={data.rateCard} />
       </div>
       {data.freeEstimate && (
         <div className="dash-main">
           <FreeEstimateBanner freeEstimate={data.freeEstimate} />
         </div>
       )}
+      <div className="dash-side">
+        <ActivityPanel activity={data.recentActivity} />
+      </div>
       {data.isAdmin && (
         <div className="dash-side">
           <AdminPanel />
@@ -86,7 +110,9 @@ function DashboardGrid({ data }) {
 export default function DashboardHome() {
   return (
     <RequireAuth>
-      <Dashboard />
+      <SetupGate>
+        <Dashboard />
+      </SetupGate>
     </RequireAuth>
   );
 }

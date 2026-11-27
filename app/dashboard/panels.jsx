@@ -24,7 +24,7 @@ function CardHead({ icon, title, id, children }) {
   );
 }
 
-export function RateCardPanel({ rateCard, available }) {
+export function RateCardPanel({ rateCard }) {
   return (
     <section className="dash-card" aria-labelledby="rate-card-title">
       <CardHead icon={<DocumentIcon />} id="rate-card-title" title="Rate card status" />
@@ -52,13 +52,7 @@ export function RateCardPanel({ rateCard, available }) {
       ) : (
         <>
           <p className="dash-muted">No rate card yet. Upload one to start pricing estimates.</p>
-          {available ? (
-            <Link className="dash-link" href="/rate-card/">
-              Set up rate card <span aria-hidden="true">→</span>
-            </Link>
-          ) : (
-            <p className="dash-soon">Coming soon</p>
-          )}
+          <p className="dash-soon">Coming soon</p>
         </>
       )}
     </section>
@@ -146,6 +140,8 @@ const ACTIVITY_LABELS = {
   estimate_revised: () => "Estimate revised",
   rate_card_published: (a) => `Rate card published${a.version ? ` (version ${a.version})` : ""}`,
   profile_updated: () => "Business profile updated",
+  logo_updated: () => "Logo updated",
+  logo_removed: () => "Logo removed",
 };
 
 export function ActivityPanel({ activity }) {

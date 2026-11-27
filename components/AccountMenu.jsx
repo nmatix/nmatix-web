@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { useAuth } from "../app/auth/AuthProvider";
+import { setupPending, useSetup } from "../app/auth/SetupProvider";
 import { useAccess } from "../app/auth/useAccess";
 
 export function initials(name, email) {
@@ -15,13 +16,18 @@ export function initials(name, email) {
 
 /**
  * Header account menu for signed-in users (#186): an avatar button that opens a menu with
- * the user's name and email, Dashboard, Admin (internal admins only) and Log out.
+ * the user's name and email, Finish setup (until one-time setup is done, PRD v0.6) or
+ * Dashboard, Admin (internal admins only) and Log out.
  * Follows the WAI-ARIA menu button pattern. The header remounts it on every page change
  * (key = path), which closes it. What it shows is UI only; the server enforces access.
  */
 export default function AccountMenu({ currentPath }) {
   const { user, signOut } = useAuth();
   const { isAdmin } = useAccess();
+  const setup = useSetup();
+  const home = setupPending(setup)
+    ? { href: "/get-started/", path: "/get-started", label: "Finish setup" }
+    : { href: "/dashboard/", path: "/dashboard", label: "Dashboard" };
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
@@ -123,13 +129,13 @@ export default function AccountMenu({ currentPath }) {
             {user?.email && <span className="account-dropdown-email">{user.email}</span>}
           </div>
           <Link
-            aria-current={isCurrent("/dashboard")}
-            href="/dashboard/"
+            aria-current={isCurrent(home.path)}
+            href={home.href}
             onClick={() => close()}
             role="menuitem"
             tabIndex={-1}
           >
-            Dashboard
+            {home.label}
           </Link>
           {isAdmin && (
             <Link

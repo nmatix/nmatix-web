@@ -2,10 +2,20 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { usePathname } from "next/navigation";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthProvider, SIGNED_IN_HINT } from "../app/auth/AuthProvider";
+import { SetupProvider } from "../app/auth/SetupProvider";
 import Header from "./Header";
 
-const mocks = vi.hoisted(() => ({ postJson: vi.fn(), getJson: vi.fn(), replace: vi.fn() }));
-vi.mock("../app/signup/authApi", () => ({ postJson: mocks.postJson, getJson: mocks.getJson }));
+const mocks = vi.hoisted(() => ({
+  postJson: vi.fn(),
+  getJson: vi.fn(),
+  appRequest: vi.fn(),
+  replace: vi.fn(),
+}));
+vi.mock("../app/signup/authApi", () => ({
+  postJson: mocks.postJson,
+  getJson: mocks.getJson,
+  appRequest: mocks.appRequest,
+}));
 vi.mock("next/navigation", () => ({
   usePathname: vi.fn(),
   useRouter: () => ({ replace: mocks.replace }),
@@ -14,12 +24,23 @@ vi.mock("next/navigation", () => ({
 function renderHeader() {
   return render(
     <AuthProvider>
-      <Header />
+      <SetupProvider>
+        <Header />
+      </SetupProvider>
     </AuthProvider>
   );
 }
 
-function signedInAs(user) {
+function setupStatus(complete) {
+  mocks.appRequest.mockResolvedValue({
+    ok: true,
+    status: 200,
+    data: { steps: [], complete, startHere: complete ? null : "business_profile" },
+  });
+}
+
+function signedInAs(user, { setupComplete = true } = {}) {
+  setupStatus(setupComplete);
   window.localStorage.setItem(SIGNED_IN_HINT, "1");
   mocks.postJson.mockImplementation(async (path) =>
     path === "session/refresh"
@@ -48,6 +69,7 @@ describe("Header", () => {
     window.localStorage.clear();
     mocks.postJson.mockReset();
     mocks.getJson.mockReset();
+    mocks.appRequest.mockReset();
     mocks.replace.mockReset();
   });
 
@@ -122,7 +144,9 @@ describe("Header", () => {
     vi.mocked(usePathname).mockReturnValue("/products/interior-quote-generator/");
     rerender(
       <AuthProvider>
-        <Header />
+        <SetupProvider>
+          <Header />
+        </SetupProvider>
       </AuthProvider>
     );
 
@@ -264,7 +288,9 @@ describe("Header", () => {
       vi.mocked(usePathname).mockReturnValue("/about/");
       rerender(
         <AuthProvider>
-          <Header />
+          <SetupProvider>
+            <Header />
+          </SetupProvider>
         </AuthProvider>
       );
       expect(screen.queryByRole("menu")).toBeNull();
@@ -279,6 +305,24 @@ describe("Header", () => {
       await waitFor(() => expect(mocks.replace).toHaveBeenCalledWith("/"));
       expect(mocks.postJson).toHaveBeenCalledWith("session/logout", {});
       expect(await screen.findByRole("link", { name: "Login" })).toBeTruthy();
+    });
+
+    it("offers Finish setup instead of Dashboard until setup is complete (PRD v0.6)", async () => {
+      signedInAs(contractor, { setupComplete: false });
+      renderHeader();
+      fireEvent.click(await accountButton());
+      const first = await screen.findByRole("menuitem", { name: "Finish setup" });
+      expect(first.getAttribute("href")).toBe("/get-started/");
+      expect(screen.queryByRole("menuitem", { name: "Dashboard" })).toBeNull();
+      expect(mocks.appRequest).toHaveBeenCalledWith("setup", expect.anything());
+    });
+
+    it("shows Dashboard to users without the product, without asking for setup", async () => {
+      signedInAs(admin, { setupComplete: false });
+      renderHeader();
+      fireEvent.click(await accountButton());
+      expect(screen.getByRole("menuitem", { name: "Dashboard" })).toBeTruthy();
+      expect(mocks.appRequest).not.toHaveBeenCalled();
     });
 
     it("marks Dashboard as the current page in the menu", async () => {
