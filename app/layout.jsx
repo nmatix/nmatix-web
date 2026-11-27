@@ -2,6 +2,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { AuthProvider } from "./auth/AuthProvider";
+import { SetupProvider } from "./auth/SetupProvider";
 
 export const metadata = {
   title: "nMATIX Technologies",
@@ -17,9 +18,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <AuthProvider>
-          <Header />
-          {children}
-          <Footer />
+          <SetupProvider>
+            <Header />
+            {children}
+            <Footer />
+          </SetupProvider>
         </AuthProvider>
       </body>
     </html>

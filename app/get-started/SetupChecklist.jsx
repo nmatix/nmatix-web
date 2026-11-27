@@ -1,32 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { CheckCircleIcon } from "./icons";
+import { CheckCircleIcon } from "../dashboard/icons";
 import { SETUP_STEPS } from "./setupSteps";
 
 /**
- * Setup checklist card (#32, PRD 7.2): a stepper of the six setup steps on the left and the
- * next step to take on the right. Open until every step is done, then folded; the chevron
- * shows or hides the steps at any time.
+ * The one-time setup steps (#32, PRD 7.2 v0.6): a stepper on the left and the next step to
+ * take on the right. Steps whose screens don't exist yet show "Coming soon".
  */
-export default function SetupChecklist({ checklist }) {
-  const steps = checklist?.steps || [];
-  const complete = Boolean(checklist?.complete);
-  const [open, setOpen] = useState(!complete);
+export default function SetupChecklist({ setup }) {
+  const steps = setup?.steps || [];
+  const complete = Boolean(setup?.complete);
   const done = steps.filter((s) => s.status === "complete").length;
-  const next = steps.find((s) => s.id === checklist?.startHere);
+  const next = steps.find((s) => s.id === setup?.startHere);
 
   return (
     <section className="dash-card setup-card" aria-labelledby="setup-title">
       <div className="dash-card-head">
         <CheckCircleIcon size={40} />
         <div className="dash-card-titles">
-          <h2 id="setup-title">Setup checklist</h2>
+          <h2 id="setup-title">{complete ? "Setup complete" : "Setup steps"}</h2>
           <p>
             {complete
-              ? "Your account is ready for estimates."
-              : "Complete these steps to get ready to create estimates."}
+              ? "Your account is ready. You can change any of these later."
+              : "Complete these steps once to get ready to create estimates."}
           </p>
         </div>
         <div className="setup-meter">
@@ -44,28 +41,16 @@ export default function SetupChecklist({ checklist }) {
             <span style={{ width: `${steps.length ? (done / steps.length) * 100 : 0}%` }} />
           </div>
         </div>
-        <button
-          aria-controls="setup-body"
-          aria-expanded={open}
-          aria-label={open ? "Hide setup steps" : "Show setup steps"}
-          className="chevron-button"
-          onClick={() => setOpen((value) => !value)}
-          type="button"
-        >
-          <span aria-hidden="true" className={open ? "chevron up" : "chevron"} />
-        </button>
       </div>
 
-      {open && (
-        <div className="setup-body" id="setup-body">
-          <ol className="setup-steps">
-            {steps.map((step) => (
-              <SetupStep isStartHere={step.id === checklist.startHere} key={step.id} step={step} />
-            ))}
-          </ol>
-          <NextStep complete={complete} step={next} />
-        </div>
-      )}
+      <div className="setup-body">
+        <ol className="setup-steps">
+          {steps.map((step) => (
+            <SetupStep isStartHere={step.id === setup.startHere} key={step.id} step={step} />
+          ))}
+        </ol>
+        <NextStep complete={complete} step={next} />
+      </div>
     </section>
   );
 }
@@ -98,10 +83,10 @@ function NextStep({ step, complete }) {
     return (
       <div className="setup-next">
         <h3>You&apos;re all set!</h3>
-        <p>Create an estimate for your next customer.</p>
-        <span className="dash-button is-disabled" aria-disabled="true">
-          New estimate (coming soon)
-        </span>
+        <p>Your dashboard is where you create and manage estimates.</p>
+        <Link className="dash-button" href="/dashboard/">
+          Go to your dashboard <span aria-hidden="true">→</span>
+        </Link>
       </div>
     );
   }
@@ -110,15 +95,9 @@ function NextStep({ step, complete }) {
     <div className="setup-next">
       <h3>Next: {meta.title}</h3>
       <p>{meta.description}</p>
-      {step.available ? (
-        <Link className="dash-button" href={meta.href}>
-          {meta.action} <span aria-hidden="true">→</span>
-        </Link>
-      ) : (
-        <span className="dash-button is-disabled" aria-disabled="true">
-          Coming soon
-        </span>
-      )}
+      <Link className="dash-button" href={meta.href}>
+        {meta.action} <span aria-hidden="true">→</span>
+      </Link>
     </div>
   );
 }
