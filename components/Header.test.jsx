@@ -142,7 +142,7 @@ describe("Header", () => {
     expect(screen.getByText("Products", { exact: true })).toBeTruthy();
   });
 
-  describe("account area (#29)", () => {
+  describe("account area (#29, #186)", () => {
     const contractor = {
       id: "usr_1",
       name: "Ravi Kumar",
@@ -158,12 +158,14 @@ describe("Header", () => {
       products: [],
     };
 
+    const accountButton = () => screen.findByRole("button", { name: /^Account menu for/ });
+
     it("shows Login when signed out", async () => {
       renderHeader();
       expect((await screen.findByRole("link", { name: "Login" })).getAttribute("href")).toBe(
         "/login"
       );
-      expect(screen.queryByRole("button", { name: "Log out" })).toBeNull();
+      expect(screen.queryByRole("button", { name: /Account menu/ })).toBeNull();
     });
 
     it("shows nothing in the account area while the session is restored", () => {
@@ -171,49 +173,122 @@ describe("Header", () => {
       mocks.postJson.mockReturnValue(new Promise(() => {}));
       renderHeader();
       expect(screen.queryByRole("link", { name: "Login" })).toBeNull();
-      expect(screen.queryByRole("button", { name: "Log out" })).toBeNull();
+      expect(screen.queryByRole("button", { name: /Account menu/ })).toBeNull();
     });
 
-    it("shows the user's first name, Dashboard and Log out when signed in", async () => {
+    it("shows one account button with initials and first name, not separate items", async () => {
       signedInAs(contractor);
       renderHeader();
-      expect(await screen.findByText("Ravi")).toBeTruthy();
-      expect(screen.getByText("Ravi").getAttribute("title")).toBe("ravi@example.com");
-      expect(screen.getByRole("link", { name: "Dashboard" }).getAttribute("href")).toBe(
-        "/dashboard"
-      );
+      const button = await accountButton();
+      expect(button.getAttribute("aria-label")).toBe("Account menu for Ravi Kumar");
+      expect(button.getAttribute("aria-haspopup")).toBe("menu");
+      expect(button.getAttribute("aria-expanded")).toBe("false");
+      expect(button.textContent).toBe("RKRavi");
+      expect(screen.queryByRole("link", { name: "Dashboard" })).toBeNull();
+      expect(screen.queryByRole("button", { name: "Log out" })).toBeNull();
       expect(screen.queryByRole("link", { name: "Login" })).toBeNull();
     });
 
-    it("shows the Admin link only to platform admins", async () => {
+    it("opens a menu with name, email, Dashboard and Log out", async () => {
       signedInAs(contractor);
-      const { unmount } = renderHeader();
-      await screen.findByText("Ravi");
-      expect(screen.queryByRole("link", { name: "Admin" })).toBeNull();
-      unmount();
-
-      signedInAs(admin);
       renderHeader();
-      await screen.findByText("Kiran");
-      expect(screen.getByRole("link", { name: "Admin" }).getAttribute("href")).toBe("/admin");
+      fireEvent.click(await accountButton());
+
+      const menu = screen.getByRole("menu", { name: "Account" });
+      expect((await accountButton()).getAttribute("aria-expanded")).toBe("true");
+      expect(menu.textContent).toContain("Ravi Kumar");
+      expect(menu.textContent).toContain("ravi@example.com");
+      const items = screen.getAllByRole("menuitem");
+      expect(items.map((i) => i.textContent)).toEqual(["Dashboard", "Log out"]);
+      expect(items[0].getAttribute("href")).toBe("/dashboard/");
     });
 
-    it("logs out and returns to the home page", async () => {
+    it("shows Admin in the menu only to platform admins", async () => {
+      signedInAs(admin);
+      renderHeader();
+      fireEvent.click(await accountButton());
+      const items = screen.getAllByRole("menuitem");
+      expect(items.map((i) => i.textContent)).toEqual(["Dashboard", "Admin", "Log out"]);
+      expect(items[1].getAttribute("href")).toBe("/admin/");
+    });
+
+    it("supports the keyboard: open, move, wrap and close with Escape", async () => {
+      signedInAs(admin);
+      renderHeader();
+      const button = await accountButton();
+      fireEvent.keyDown(button, { key: "ArrowDown" });
+
+      const items = await screen.findAllByRole("menuitem");
+      await waitFor(() => expect(document.activeElement).toBe(items[0]));
+      const menu = screen.getByRole("menu");
+      fireEvent.keyDown(menu, { key: "ArrowDown" });
+      expect(document.activeElement).toBe(items[1]);
+      fireEvent.keyDown(menu, { key: "End" });
+      expect(document.activeElement).toBe(items[2]);
+      fireEvent.keyDown(menu, { key: "ArrowDown" });
+      expect(document.activeElement).toBe(items[0]);
+      fireEvent.keyDown(menu, { key: "ArrowUp" });
+      expect(document.activeElement).toBe(items[2]);
+      fireEvent.keyDown(menu, { key: "Home" });
+      expect(document.activeElement).toBe(items[0]);
+
+      fireEvent.keyDown(menu, { key: "Escape" });
+      expect(screen.queryByRole("menu")).toBeNull();
+      expect(document.activeElement).toBe(button);
+    });
+
+    it("opens with Enter and closes on Tab", async () => {
       signedInAs(contractor);
       renderHeader();
-      fireEvent.click(await screen.findByRole("button", { name: "Log out" }));
+      fireEvent.keyDown(await accountButton(), { key: "Enter" });
+      const menu = await screen.findByRole("menu");
+      fireEvent.keyDown(menu, { key: "Tab" });
+      expect(screen.queryByRole("menu")).toBeNull();
+    });
+
+    it("closes when the pointer is pressed outside", async () => {
+      signedInAs(contractor);
+      renderHeader();
+      fireEvent.click(await accountButton());
+      expect(screen.getByRole("menu")).toBeTruthy();
+      fireEvent.pointerDown(document.body);
+      expect(screen.queryByRole("menu")).toBeNull();
+    });
+
+    it("closes when the page changes", async () => {
+      signedInAs(contractor);
+      const { rerender } = renderHeader();
+      fireEvent.click(await accountButton());
+      expect(screen.getByRole("menu")).toBeTruthy();
+
+      vi.mocked(usePathname).mockReturnValue("/about/");
+      rerender(
+        <AuthProvider>
+          <Header />
+        </AuthProvider>
+      );
+      expect(screen.queryByRole("menu")).toBeNull();
+    });
+
+    it("logs out from the menu and returns to the home page", async () => {
+      signedInAs(contractor);
+      renderHeader();
+      fireEvent.click(await accountButton());
+      fireEvent.click(screen.getByRole("menuitem", { name: "Log out" }));
 
       await waitFor(() => expect(mocks.replace).toHaveBeenCalledWith("/"));
       expect(mocks.postJson).toHaveBeenCalledWith("session/logout", {});
       expect(await screen.findByRole("link", { name: "Login" })).toBeTruthy();
     });
 
-    it("marks Dashboard as the current page there", async () => {
+    it("marks Dashboard as the current page in the menu", async () => {
       vi.mocked(usePathname).mockReturnValue("/dashboard/");
       signedInAs(contractor);
       renderHeader();
-      await screen.findByText("Ravi");
-      expect(screen.getByText("Dashboard").getAttribute("aria-current")).toBe("page");
+      fireEvent.click(await accountButton());
+      expect(screen.getByRole("menuitem", { name: "Dashboard" }).getAttribute("aria-current")).toBe(
+        "page"
+      );
     });
   });
 });
