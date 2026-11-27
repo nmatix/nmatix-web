@@ -155,14 +155,116 @@ header {
   background: #ffa033;
   text-decoration: none;
 }
-.account-actions .account-name {
+/* Header account menu (#186) */
+.account-menu {
+  position: relative;
+}
+.account-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 10px 4px 4px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+.account-button:hover,
+.account-button[aria-expanded="true"] {
+  border-color: #3a3a3a;
+  background: #161616;
+}
+.account-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #ff8a05;
+  color: #111;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+.account-button-name {
   max-width: 12ch;
   overflow: hidden;
-  color: #d0d0d0;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.account-actions .logout-button {
-  min-height: auto;
+.account-caret {
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+.account-caret.is-open {
+  transform: translateY(2px) rotate(-135deg);
+}
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  display: grid;
+  min-width: 240px;
+  padding: 6px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  background: #161616;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+.account-dropdown-header {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid #2e2e2e;
+  margin-bottom: 4px;
+}
+.account-dropdown-name {
+  font-weight: bold;
+}
+.account-dropdown-email {
+  color: #a9a9a9;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.account-actions .account-dropdown a,
+.account-dropdown button {
+  display: block;
+  min-height: 40px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+.account-actions .account-dropdown a:hover,
+.account-actions .account-dropdown a:focus-visible,
+.account-dropdown button:hover,
+.account-dropdown button:focus-visible {
+  background: #262626;
+  outline: none;
+  text-decoration: none;
+}
+.account-actions .account-dropdown a[aria-current="page"] {
+  color: #ff8a05;
+}
+.account-dropdown-divider {
+  height: 1px;
+  margin: 4px 0;
+  background: #2e2e2e;
 }
 .account-actions a,
 .registration-login-prompt a,
@@ -459,6 +561,10 @@ footer nav a:focus-visible {
     margin: 0;
     padding: 4px 12px 8px;
     align-self: center;
+  }
+  .account-dropdown {
+    right: 50%;
+    transform: translateX(50%);
   }
   .registration-card {
     padding: 22px;

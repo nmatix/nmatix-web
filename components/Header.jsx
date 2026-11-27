@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../app/auth/AuthProvider";
-import { useAccess } from "../app/auth/useAccess";
 import { products } from "../data/products";
+import AccountMenu from "./AccountMenu";
 
 function NavigationLink({ href, label, currentPath }) {
   if (currentPath === href) {
@@ -19,14 +19,11 @@ function NavigationLink({ href, label, currentPath }) {
   return <Link href={href}>{label}</Link>;
 }
 
-// Account area (#29): Login when signed out; Dashboard, Admin (platform admins only),
-// the user's first name and Log out when signed in. Nothing while the session is being
-// restored, so the header never flashes "Login" for a signed-in user. Built from the
-// signed-in user's /me profile; the server still enforces every permission.
+// Account area (#29, #186): Login when signed out; one account menu when signed in.
+// Nothing while the session is being restored, so the header never flashes "Login" for a
+// signed-in user. Built from the signed-in user's /me profile; the server enforces access.
 function AccountActions({ currentPath }) {
-  const { status, user, signOut } = useAuth();
-  const { isAdmin } = useAccess();
-  const router = useRouter();
+  const { status } = useAuth();
 
   if (status === "loading") return <div className="account-actions" aria-hidden="true" />;
 
@@ -40,23 +37,10 @@ function AccountActions({ currentPath }) {
     );
   }
 
-  const firstName = (user?.name || "").trim().split(/\s+/)[0] || "Account";
-
-  async function handleLogout() {
-    await signOut();
-    router.replace("/");
-  }
-
   return (
     <div className="account-actions">
-      <NavigationLink currentPath={currentPath} href="/dashboard" label="Dashboard" />
-      {isAdmin && <NavigationLink currentPath={currentPath} href="/admin" label="Admin" />}
-      <span className="account-name" title={user?.email || undefined}>
-        {firstName}
-      </span>
-      <button className="link-button logout-button" onClick={handleLogout} type="button">
-        Log out
-      </button>
+      {/* Keyed by path: a page change remounts it, which closes the menu */}
+      <AccountMenu currentPath={currentPath} key={currentPath} />
     </div>
   );
 }
