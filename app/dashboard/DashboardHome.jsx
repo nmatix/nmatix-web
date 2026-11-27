@@ -1,15 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import { useAuth } from "../auth/AuthProvider";
 import RequireAuth from "../auth/RequireAuth";
+import {
+  ActivityPanel,
+  AdminPanel,
+  EstimatesPanel,
+  FreeEstimateBanner,
+  RateCardPanel,
+} from "./panels";
 import SetupChecklist from "./SetupChecklist";
 import { useDashboard } from "./useDashboard";
 
 /**
- * The contractor's home page after every login (#158, PRD 7.4). This first slice shows the
- * setup checklist; rate card status, estimate counts and recent estimates fill in as those
- * features are built.
+ * The contractor's home page after every login (#158, PRD 7.4), laid out as in the #158
+ * wireframe. Cards show empty states until the features behind them are built.
  */
 function Dashboard() {
   const { user } = useAuth();
@@ -18,12 +23,13 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      <header className="dashboard-header">
-        <h1 id="dashboard-title">{firstName ? `Welcome, ${firstName}` : "Welcome"}</h1>
+      <div className="dashboard-header">
+        <h1 id="dashboard-title">{firstName ? `Welcome back, ${firstName}!` : "Welcome back!"}</h1>
+        <p>Here&apos;s what&apos;s happening with your nMATIX account.</p>
         {user?.preview && (
           <p className="field-hint">Local preview: no account session was created.</p>
         )}
-      </header>
+      </div>
 
       {dashboard.status === "loading" && (
         <p className="auth-loading" role="status" aria-live="polite">
@@ -32,7 +38,7 @@ function Dashboard() {
       )}
 
       {dashboard.status === "error" && (
-        <section className="dashboard-panel" role="alert">
+        <section className="dash-card" role="alert">
           <h2>We couldn&apos;t load your dashboard</h2>
           <p>Check your connection and try again.</p>
           <button className="link-button" onClick={dashboard.retry} type="button">
@@ -41,40 +47,39 @@ function Dashboard() {
         </section>
       )}
 
-      {dashboard.status === "ready" && <DashboardContent data={dashboard.data} />}
+      {dashboard.status === "ready" && <DashboardGrid data={dashboard.data} />}
     </div>
   );
 }
 
-function DashboardContent({ data }) {
+function DashboardGrid({ data }) {
+  const rateCardStep = data.checklist?.steps?.find((s) => s.id === "rate_card");
+  // Two columns on wide screens, paired by row as in the wireframe; one column on phones.
   return (
-    <>
-      <SetupChecklist checklist={data.checklist} />
-
-      <div className="dashboard-grid">
-        <section className="dashboard-panel" aria-labelledby="new-estimate-title">
-          <h2 id="new-estimate-title">New estimate</h2>
-          <p>Upload a plan, check the rooms and get a priced estimate to share as a PDF.</p>
-          <button className="dashboard-primary" disabled type="button">
-            New estimate
-          </button>
-          <p className="field-hint">Coming soon: finish setup first.</p>
-        </section>
-
-        <section className="dashboard-panel" aria-labelledby="recent-estimates-title">
-          <h2 id="recent-estimates-title">Recent estimates</h2>
-          {data.estimates?.recent?.length ? null : (
-            <p className="dashboard-empty">Your estimates will appear here.</p>
-          )}
-        </section>
+    <div className="dash-grid">
+      <div className="dash-main">
+        <SetupChecklist checklist={data.checklist} />
       </div>
-
-      {data.isAdmin && (
-        <p className="dashboard-admin-link">
-          <Link href="/admin/">Go to the admin area</Link>
-        </p>
+      <div className="dash-side">
+        <RateCardPanel available={Boolean(rateCardStep?.available)} rateCard={data.rateCard} />
+      </div>
+      <div className="dash-main">
+        <EstimatesPanel estimates={data.estimates} />
+      </div>
+      <div className="dash-side">
+        <ActivityPanel activity={data.recentActivity} />
+      </div>
+      {data.freeEstimate && (
+        <div className="dash-main">
+          <FreeEstimateBanner freeEstimate={data.freeEstimate} />
+        </div>
       )}
-    </>
+      {data.isAdmin && (
+        <div className="dash-side">
+          <AdminPanel />
+        </div>
+      )}
+    </div>
   );
 }
 
